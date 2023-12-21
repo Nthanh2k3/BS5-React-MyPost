@@ -16,7 +16,39 @@ import AccCreateByBoss from "./Components/AccCreateByBoss.js";
 
 function App() {
     return (
-        <AccCreateByBoss/>
+        <BrowserRouter>
+        <Routes>
+            <Route path="/*" element={<Root />}>
+                {/** public routes */}
+                <Route path="home" element={<Home />} />
+                <Route path="login" element={<Login />} />
+                <Route path="signup" element={<Signup />} />
+                <Route path="tracking" element={<Tracking />} />
+                <Route path="*" element={<Home />} />
+                {/**protected routes */}
+
+                <Route element={<BossRoute />}>
+                    <Route path="boss" element={<div>boss</div>} />
+                </Route>
+
+                <Route element={<WarehouseStaffRoute />}>
+                    <Route path="warehouseStaff" element={<div>warehouseStaff</div>} />
+                </Route>
+
+                <Route element={<WarehouseManagerRoute />}>
+                    <Route path="warehouseManager" element={<div>warehouseManager</div>} />
+                </Route>
+
+                <Route element={<OfficeStaffRoute />}>
+                    <Route path="officeStaff" element={<div>officeStaff</div>} />
+                </Route>
+
+                <Route element={<OfficeManagerRoute />}>
+                    <Route path="officeManager" element={<div>officeManager</div>} />
+                </Route>
+            </Route>
+        </Routes>
+    </BrowserRouter>
     );
 }
 
