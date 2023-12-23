@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const customHeaders = {
     "ngrok-skip-browser-warning": "123456",
     // Add any other headers you need
@@ -16,6 +17,8 @@ const axiosConfig = {
 export default function Tracking() {
     const [orderId, setOrderId] = useState("");
     const [orderData, setOrderData] = useState([]);
+    const [timeEvents, setTimeEvents] = useState([]);
+    const events = ["0", "1", "2", "3", "4", "5", "6", "7", "8"];
 
     useEffect(() => {
         // Gọi API và cập nhật state khi component được render
@@ -29,8 +32,8 @@ export default function Tracking() {
                 axiosConfig
             );
             // Handle the response data
-            console.log(response.data);
             setOrderData(response.data);
+            setTimeEvents(response.data.order.processTime);
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
@@ -49,7 +52,9 @@ export default function Tracking() {
                         <div class="flex flex-col w-1/3">
                             <div class="">
                                 <label>
-                                    <p class="font-bold mb-3 text-2xl">Tracking Number</p>
+                                    <p class="font-bold mb-3 text-2xl font-quick">
+                                        Tracking Number
+                                    </p>
                                 </label>
                                 <input
                                     type="text"
@@ -62,7 +67,7 @@ export default function Tracking() {
                                 <button
                                     onClick={handleInputChange}
                                     type="button"
-                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 uppercase"
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 uppercase font-quick w-auto"
                                 >
                                     Tracking
                                     <svg
@@ -90,16 +95,14 @@ export default function Tracking() {
                             />
                         </div>
                     </div>
-                    <div class="">
+                    <div class=" justify-center w-[70%] pt-10">
                         {orderData.order ? (
                             <>
-                                <h1 class="m-3">{orderData.order.senderName}</h1>
-                                <h1 class="m-3">{orderData.order.recipientName}</h1>
-                                {/* Render other order details as needed */}
+                                <TrackInfo events={timeEvents} />
                             </>
                         ) : (
-                            <div>
-                                <p class="m-3">Nothing found</p>
+                            <div class="p-10">
+                                <TrackInfo events={timeEvents} />
                             </div>
                         )}
                     </div>
@@ -108,4 +111,115 @@ export default function Tracking() {
             <Footer />
         </div>
     );
+}
+
+const destinations = [
+    {
+        name: "Quận Cầu Giấy",
+        type: "Điểm giao dịch",
+    },
+    {
+        name: "Hà Nội",
+        type: "Điểm tập kết",
+    },
+    {
+        name: "Hồ Chí Minh",
+        type: "Điểm tập kết",
+    },
+    {
+        name: "Quận Thủ Đức",
+        type: "Điểm giao dịch",
+    },
+];
+
+function TrackInfo({ events }) {
+    return (
+        <div className="container font-quick border-solid border-collapse border border-slate-500 p-4">
+            <h1 className="text-4xl font-quick mb-2 font-bold">Order History</h1>
+            <hr className="my-8 bg-gray-200 border-b-4 w-full" />
+            <table className="table-auto w-full text-sm text-left font-quick">
+                <thead className="font-quick">
+                    <tr>
+                        <th className="font-quick text-center text-2xl">Trạng thái</th>
+                        <th className="font-quick text-center text-2xl">Chi tiết</th>
+                        <th className="font-quick text-center text-2xl">Thời gian</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {events.map((event, index) => (
+                        <tr key={index}>
+                            <td>
+                                <i className="fa-solid fa-truck-fast fa-xl p-3"></i>
+                            </td>
+                            <td className="font-quick">
+                                {renderContentBasedOnIndex(index, destinations)}
+                            </td>
+                            <td className="font-bold font-quick">{events[index]}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+function renderContentBasedOnIndex(index, destinations) {
+    switch (index) {
+        case 0:
+            return (
+                <div class="font-quick">
+                    Hàng đã được chuyển đến điểm giao dịch {destinations[index / 2].name}
+                </div>
+            );
+        case 1:
+            return (
+                <div class="font-quick">
+                    Hàng đã rời khỏi điểm giao dịch {destinations[(index - 1) / 2].name} và đang
+                    được chuyển đển điểm tập kết {destinations[(index - 1) / 2 + 1].name}
+                </div>
+            );
+        case 2:
+            return (
+                <div class="font-quick">
+                    Hàng đã được chuyển đến điểm tập kết {destinations[index / 2].name}
+                </div>
+            );
+        case 3:
+            return (
+                <div class="font-quick">
+                    Hàng đã rời khỏi điểm tập kết {destinations[(index - 1) / 2].name} và đang được
+                    chuyển đển điểm tập kết {destinations[(index - 1) / 2 + 1].name}
+                </div>
+            );
+        case 4:
+            return (
+                <div class="font-quick">
+                    Hàng đã được chuyển đến điểm tập kết {destinations[index / 2].name}
+                </div>
+            );
+        case 5:
+            return (
+                <div class="font-quick">
+                    Hàng đã rời khỏi điểm tập kết {destinations[(index - 1) / 2].name} và đang được
+                    chuyển đển điểm giao dịch {destinations[(index - 1) / 2 + 1].name}
+                </div>
+            );
+        case 6:
+            return (
+                <div class="font-quick">
+                    Hàng đã được chuyển đến điểm giao dịch {destinations[index / 2].name}
+                </div>
+            );
+        case 7:
+            return (
+                <div class="font-quick">
+                    Hàng đã rời khỏi điểm giao dịch {destinations[(index - 1) / 2].name} và đang
+                    được chuyển đến người nhận
+                </div>
+            );
+        case 8:
+            return <div class="font-quick">Hàng đã được chuyển đến người nhận.</div>;
+        default:
+            return <div>Default content</div>;
+    }
 }
