@@ -70,55 +70,6 @@ function LoginForm() {
                         Login
                     </h4>
                 </div>
-                <div className="login-box-content">
-                    <div className="fb-login box-shadow">
-                        <a
-                            className="d-flex flex-row align-items-center social-login-link"
-                            href="/#"
-                        >
-                            <i
-                                className="fa fa-facebook"
-                                style={{
-                                    marginLeft: 0,
-                                    paddingRight: 20,
-                                    paddingLeft: 22,
-                                    width: 56,
-                                }}
-                            />
-                            Login with Facebook
-                        </a>
-                    </div>
-                    <div className="gp-login box-shadow">
-                        <a
-                            className="d-flex flex-row align-items-center social-login-link"
-                            style={{ marginBottom: 10 }}
-                            href="/#"
-                        >
-                            <i
-                                className="fa fa-google"
-                                style={{ color: "rgb(255,255,255)", width: 56 }}
-                            />
-                            Login with Google+
-                        </a>
-                    </div>
-                </div>
-                <div className="d-flex flex-row align-items-center login-box-seperator-container">
-                    <div className="login-box-seperator" />
-                    <div className="login-box-seperator-text">
-                        <p
-                            style={{
-                                marginBottom: 0,
-                                paddingLeft: 10,
-                                paddingRight: 10,
-                                fontWeight: 400,
-                                color: "rgb(201,201,201)",
-                            }}
-                        >
-                            or
-                        </p>
-                    </div>
-                    <div className="login-box-seperator" />
-                </div>
                 <div className="email-login" style={{ backgroundColor: "/#ffffff" }}>
                     <input
                         type="email"

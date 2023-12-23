@@ -13,6 +13,7 @@ import OfficeManagerRoute from "./Routes/OfficeManagerRoute.js";
 import OfficeStaffRoute from "./Routes/OfficeStaffRoute.js";
 import WarehouseManagerRoute from "./Routes/WarehouseManagerRoute.js";
 import BossRoute from "./Routes/BossRoute.js";
+import AccCreateByBoss from "./Components/AccCreateByBoss.js";
 import Hello from "./Components/test.js";
 import HomeBoss from "./pages/Boss/HomeBoss.jsx";
 
@@ -42,20 +43,20 @@ function App() {
                         <Route path="warehouseStaff" element={<Hello />} />
                     </Route>
 
-                    <Route element={<WarehouseManagerRoute />}>
-                        <Route path="warehouseManager" element={<div>warehouseManager</div>} />
-                    </Route>
-
-                    <Route element={<OfficeStaffRoute />}>
-                        <Route path="officeStaff" element={<div>officeStaff</div>} />
-                    </Route>
-
-                    <Route element={<OfficeManagerRoute />}>
-                        <Route path="officeManager" element={<div>officeManager</div>} />
-                    </Route>
+                <Route element={<WarehouseManagerRoute />}>
+                    <Route path="warehouseManager" element={<div>warehouseManager</div>} />
                 </Route>
-            </Routes>
-        </BrowserRouter>
+
+                <Route element={<OfficeStaffRoute />}>
+                    <Route path="officeStaff" element={<div>officeStaff</div>} />
+                </Route>
+
+                <Route element={<OfficeManagerRoute />}>
+                    <Route path="officeManager" element={<div>officeManager</div>} />
+                </Route>
+            </Route>
+        </Routes>
+    </BrowserRouter>
     );
 }
 
