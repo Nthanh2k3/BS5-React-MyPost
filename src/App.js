@@ -16,6 +16,12 @@ import BossRoute from "./Routes/BossRoute.js";
 import AccCreateByBoss from "./Components/AccCreateByBoss.js";
 import Hello from "./Components/test.js";
 import HomeBoss from "./pages/Boss/HomeBoss.jsx";
+import ListTransferManager from "./Components/ListTransferManager.js";
+import ListOffice from "./pages/Boss/ListOffice.js";
+import ListWarehouse from "./pages/Boss/ListWarehouse.js";
+import ListOfficeManager from "./pages/Boss/ListOfficeManager.js";
+import ListWarehouseManager from "./pages/Boss/ListWarehouseManager.js";
+import StatisticAll from "./pages/Boss/StatisticAll.js";
 
 function App() {
     return (
@@ -35,7 +41,12 @@ function App() {
                     {/**protected routes */}
                     <Route element={<BossRoute />}>
                         <Route path="boss" element={<HomeBoss />}>
-                            <Route path="createAccount" element={<Tracking />} />
+                            <Route path="createAccount" element={<AccCreateByBoss />} />
+                            <Route path="officeManager" element={<ListOfficeManager />} />
+                            <Route path="warehouseManager" element={<ListWarehouseManager />} />
+                            <Route path="office" element={<ListOffice />} />
+                            <Route path="warehouse" element={<ListWarehouse />} />
+                            <Route path="statistic/all" element={<StatisticAll />} />
                         </Route>
                     </Route>
 
@@ -43,20 +54,20 @@ function App() {
                         <Route path="warehouseStaff" element={<Hello />} />
                     </Route>
 
-                <Route element={<WarehouseManagerRoute />}>
-                    <Route path="warehouseManager" element={<div>warehouseManager</div>} />
-                </Route>
+                    <Route element={<WarehouseManagerRoute />}>
+                        <Route path="warehouseManager" element={<div>warehouseManager</div>} />
+                    </Route>
 
-                <Route element={<OfficeStaffRoute />}>
-                    <Route path="officeStaff" element={<div>officeStaff</div>} />
-                </Route>
+                    <Route element={<OfficeStaffRoute />}>
+                        <Route path="officeStaff" element={<div>officeStaff</div>} />
+                    </Route>
 
-                <Route element={<OfficeManagerRoute />}>
-                    <Route path="officeManager" element={<div>officeManager</div>} />
+                    <Route element={<OfficeManagerRoute />}>
+                        <Route path="officeManager" element={<div>officeManager</div>} />
+                    </Route>
                 </Route>
-            </Route>
-        </Routes>
-    </BrowserRouter>
+            </Routes>
+        </BrowserRouter>
     );
 }
 

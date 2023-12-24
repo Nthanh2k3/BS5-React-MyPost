@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import axiosInstance from "../functions/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,10 +19,7 @@ function LoginForm() {
 
     const loginAPI = async () => {
         try {
-            const response = await axios.post(
-                `https://uniformly-mighty-mite.ngrok-free.app/user/login`,
-                info
-            );
+            const response = await axiosInstance.post(`user/login`, info);
             // Handle the response data
             const decoded = jwtDecode(response.data.accessToken);
             Cookies.set("jwt", response.data.accessToken);

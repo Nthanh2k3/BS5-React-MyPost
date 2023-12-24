@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import axiosInstance from "../functions/axiosInstance";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-const customHeaders = {
-    "ngrok-skip-browser-warning": "123456",
-    // Add any other headers you need
-};
-
-// Axios configuration object
-const axiosConfig = {
-    method: "get",
-    headers: customHeaders,
-};
 
 export default function Tracking() {
     const [orderId, setOrderId] = useState("");
@@ -27,10 +18,7 @@ export default function Tracking() {
 
     const fetchData = async () => {
         try {
-            const response = await axios.request(
-                ` https://uniformly-mighty-mite.ngrok-free.app/orders/id=${orderId}`,
-                axiosConfig
-            );
+            const response = await axiosInstance.get(`orders/id=${orderId}`);
             // Handle the response data
             setOrderData(response.data);
             setTimeEvents(response.data.order.processTime);

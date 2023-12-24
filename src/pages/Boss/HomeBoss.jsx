@@ -8,9 +8,13 @@ function HomeBoss() {
     return (
         <div className="">
             <Header/>
-            <div className="grid grid-cols-2">
-            <Sidebar/>
-            <Outlet/>
+            <div className="flex h-full">
+                <div className="w-60">
+                    <Sidebar />
+                </div>
+                <div className="flex-1">
+                    <Outlet />
+                </div>
             </div>
         </div>
     )
