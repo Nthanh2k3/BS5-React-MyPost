@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
     headers: {
         "ngrok-skip-browser-warning": "123456", // Skip
         "Content-Type": "application/json", // Set default headers for all requests
-        Authorization: "Bearer yourAccessToken", // Add any authentication headers
+        // Add any authentication headers
     },
 });
 

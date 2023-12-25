@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import axiosInstance from "../../functions/axiosInstance";
@@ -26,7 +28,8 @@ export default function ListWarehouse() {
     const [isFetch, setIsFetch] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen((cur) => !cur);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Gọi API và cập nhật state khi component được render
@@ -107,6 +110,11 @@ export default function ListWarehouse() {
         }
     };
 
+    const handleRowClick = (id) => {
+        console.log(id);
+        navigate(`/boss/statistic/warehouse/${id}`);
+    };
+
     const columns = [
         {
             name: "Warehouse Code",
@@ -115,7 +123,7 @@ export default function ListWarehouse() {
             width: "25%",
         },
         {
-            name: "Province",
+            name: "Warehouse",
             selector: (row) => row.province,
             sortable: true,
         },
@@ -201,6 +209,7 @@ export default function ListWarehouse() {
                 customStyles={customStyles}
                 highlightOnHover
                 pointerOnHover
+                onRowClicked={(row, e) => handleRowClick(row.id)}
             />
         </div>
     );

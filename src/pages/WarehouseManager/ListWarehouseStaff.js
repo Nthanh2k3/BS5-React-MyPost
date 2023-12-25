@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import axiosInstance from "../../functions/axiosInstance";
-import { useNavigate } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import MyDatePicker from "../../Components/MyDatePicker";
+import Cookies from "js-cookie";
+
 import {
     Button,
     Dialog,
@@ -15,19 +16,20 @@ import {
     Option,
 } from "@material-tailwind/react";
 
-export default function ListOffice() {
-    const [offices, setOffices] = useState([]);
+export default function ListWarehouseStaff() {
+    const [isFetch, setIsFetch] = useState(false);
+    const [officeManager, setOfficeManager] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [district, setDistrict] = useState("");
+    const [postOfficeId, setPostOfficeId] = useState("");
+
     const [provinces, setProvinces] = useState([
         {
-            province: "",
-            warehouseId: "",
+            postOfficeID: "",
+            district: "",
+            belongToWarehouseID: "",
         },
     ]);
-    const [isFetch, setIsFetch] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen((cur) => !cur);
-    const navigate = useNavigate();
 
     useEffect(() => {
         // Gọi API và cập nhật state khi component được render
@@ -36,92 +38,44 @@ export default function ListOffice() {
 
     const fetchData = async () => {
         try {
-            const response = await axiosInstance.get(`postoffice/all`);
-            // Handle the response data
+            const roleResponse = await axiosInstance.get(`user/role`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get("jwt")}`,
+                },
+            });
+            setPostOfficeId(roleResponse.data.warehouseID);
 
-            const mapOffices = await Promise.all(
-                response.data.postOffices.map(async (office) => {
-                    const officeResponse = await getOfficeManagerByOfficeId(office.postOfficeID);
-                    const warehouseResponse = await getWarehouseById(office.belongToWarehouseID);
+            const response = await axiosInstance.get(
+                `user/warehouseStaff/${roleResponse.data.warehouseID}`
+            );
 
+            const responseDistrict = await axiosInstance.get(
+                `warehouse/${roleResponse.data.warehouseID}`
+            );
+            setDistrict(responseDistrict.data.warehouse.province);
+
+            // Use Promise.all to wait for all async calls to getOfficeById
+            const mapWarehouses = await Promise.all(
+                response.data.warehouseStaffs.map(async (officeManager) => {
                     return {
-                        id: office.postOfficeID,
-                        district: office.district,
-                        province: warehouseResponse.data.warehouse.province,
-                        manager: officeResponse.data.postOfficeManager.name,
+                        id: officeManager.userID,
+                        name: officeManager.name,
+                        email: officeManager.email,
+                        district: district,
+                        birthdate: officeManager.birthdate.substring(0, 10),
                     };
                 })
             );
-
-            console.log(response.data);
-
-            getAllWarehouse();
-            setOffices(mapOffices);
+            setOfficeManager(mapWarehouses);
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
         }
-    };
-
-    const getOfficeManagerByOfficeId = async (id) => {
-        try {
-            const response = await axiosInstance.get(`postoffice/manager/${id}`);
-            // Return the response for further processing
-            console.log(response);
-            return response;
-        } catch (error) {
-            // Handle errors
-
-            if (
-                error.response.data.message ==
-                "postOfficeManager not found for the specified postOffice"
-            ) {
-                const response1 = {
-                    data: {
-                        postOfficeManager: {
-                            name: "None",
-                        },
-                    },
-                };
-                return response1;
-            }
-            console.error("Error fetching data:", error.response.data.message);
-        }
-    };
-
-    const getWarehouseById = async (id) => {
-        try {
-            const response = await axiosInstance.get(`warehouse/${id}`);
-            // Return the response for further processing
-            console.log(response);
-            return response;
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
-    };
-
-    const getAllWarehouse = async () => {
-        const response = await axiosInstance.get(`warehouse/all`);
-        const mapProvinces = response.data.warehouses.map((warehouse) => {
-            return {
-                province: warehouse.province,
-                warehouseId: warehouse.warehouseID,
-            };
-        });
-        console.log(mapProvinces);
-        setProvinces(mapProvinces);
     };
 
     const handleButtonClick = (e, id) => {
         e.preventDefault();
-        console.log(id);
-        // deleteWarehouse(id);
-    };
-
-    const handleRowClick = (id) => {
-        console.log(id);
-        navigate(`/boss/statistic/office/${id}`);
+        deleteWarehouse(id);
     };
 
     const deleteWarehouse = async (id) => {
@@ -133,28 +87,28 @@ export default function ListOffice() {
             console.error("Error fetching data:", error);
         }
     };
-
     const columns = [
         {
-            name: "Office Code",
+            name: "ID",
             selector: (row) => row.id,
             sortable: true,
+            width: "10%",
+        },
+        {
+            name: "Name",
+            selector: (row) => row.name,
+            sortable: true,
+        },
+        {
+            name: "Birthdate",
+            selector: (row) => row.birthdate,
+            sortable: true,
+        },
+        {
+            name: "Email",
+            selector: (row) => row.email,
+            sortable: true,
             width: "20%",
-        },
-        {
-            name: "Office",
-            selector: (row) => row.district,
-            sortable: true,
-        },
-        {
-            name: "Warehouse",
-            selector: (row) => row.province,
-            sortable: true,
-        },
-        {
-            name: "Manager",
-            selector: (row) => row.manager,
-            sortable: true,
         },
         {
             name: "Actions",
@@ -205,15 +159,17 @@ export default function ListOffice() {
         },
     };
 
-    const filteredWarehouses = offices.filter(
-        (office) =>
-            office.district.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            office.province.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredOfficeManager = officeManager.filter(
+        (officeManager) =>
+            officeManager.district.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            officeManager.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
         <div className="tableContainer w-[90%] mx-auto mt-3 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
-            <h1 className="font-bold font-quick pb-3 pt-3 text-center">List Office</h1>
+            <h1 className="font-bold font-quick pb-3 pt-3 text-center">
+                List Warehouse Staff in {district}
+            </h1>
             <div className="flex justify-between -mb-20">
                 <div className="w-full md:w-72 ml-2 mb-5">
                     <Input
@@ -224,52 +180,64 @@ export default function ListOffice() {
                     />
                 </div>
             </div>
-            <DialogWithForm provinces={provinces} />
+            <DialogWithForm district={district} postOfficeId={postOfficeId} />
 
             <DataTable
                 className="px-2"
                 columns={columns}
-                data={filteredWarehouses}
+                data={filteredOfficeManager}
                 selectableRows
                 pagination
                 customStyles={customStyles}
                 highlightOnHover
                 pointerOnHover
-                onRowClicked={(row, e) => handleRowClick(row.id)}
             />
-
-            <Outlet />
         </div>
     );
 }
 
-function DialogWithForm({ provinces }) {
+function DialogWithForm({ district, postOfficeId }) {
     const [open, setOpen] = React.useState(false);
-    const [district, setDistrict] = useState("");
+    const [managers, setManagers] = useState(["Nam", "Quang", "Thành"]);
     const [province, setProvince] = useState("");
+    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [birthdate, setBirthdate] = useState(null);
     const handleOpen = () => setOpen((cur) => !cur);
 
     const handleInputChange = (event, setState) => {
         setState(event.target.value);
     };
+    const handleBirthdateChange = (date) => {
+        setBirthdate(date);
+    };
 
     const handleSubmit = () => {
+        const payload = {
+            username,
+            password,
+            name,
+            email,
+            birthdate: birthdate.toLocaleDateString("en-CA"), // Format to yyyy-mm-dd
+            warehouseID: postOfficeId,
+            role: "warehouseStaff",
+        };
+
+        // Perform any necessary actions with the payload (e.g., send it to the server)
+        console.log("Submit payload:", payload);
+        createNewOfficeStaff(payload);
         handleOpen();
-        createNewWarehouse();
         // window.location.reload(true);
     };
 
-    const createNewWarehouse = async () => {
+    const createNewOfficeStaff = async (payload) => {
         try {
-            const response = await axiosInstance.request(
-                `postoffice/new/warehouseID=${province.warehouseId}`,
-                {
-                    method: "post",
-                    data: {
-                        district: district,
-                    },
-                }
-            );
+            const response = await axiosInstance.request(`user/register`, {
+                method: "post",
+                data: payload,
+            });
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
@@ -277,7 +245,7 @@ function DialogWithForm({ provinces }) {
     };
 
     return (
-        <div className="flex justify-end mb-2">
+        <div className="flex justify-end mb-2 ">
             <Button
                 onClick={handleOpen}
                 className="flex items-center gap-x-1 rounded-full w-auto mr-2"
@@ -288,38 +256,67 @@ function DialogWithForm({ provinces }) {
 
             <Dialog open={open} handler={handleOpen} size="lg" className="">
                 <Card className="mx-auto w-full">
-                    <CardBody className="flex flex-col gap-3">
+                    <CardBody className="flex flex-col gap-3 h-[38rem] overflow-y-auto">
                         <Typography variant="h4" color="blue-gray" className="font-bold uppercase">
-                            Create Office
+                            Create Account for Staff in {district}
                         </Typography>
                         <hr className="bg-gray-200 border-b-4 w-full -mt-2" />
 
                         <Typography className="-mb-2" variant="h6">
-                            Office
+                            Name
                         </Typography>
                         <Input
-                            label="Enter Office"
+                            label="Enter Code"
                             size="lg"
                             color="indigo"
-                            value={district}
-                            onChange={(e) => handleInputChange(e, setDistrict)}
+                            placeholder="Name"
+                            value={name}
+                            onChange={(e) => handleInputChange(e, setName)}
                         />
 
                         <Typography className="-mb-2" variant="h6">
-                            Belong to Warehouse
+                            Username
                         </Typography>
-                        <Select
-                            label="Select Warehouse"
-                            color="indigo"
+                        <Input
+                            label="Enter Code"
                             size="lg"
-                            onChange={(e) => setProvince(e)}
-                        >
-                            {provinces.map((province, index) => (
-                                <Option key={index} value={province}>
-                                    {province.province}
-                                </Option>
-                            ))}
-                        </Select>
+                            color="indigo"
+                            value={username}
+                            onChange={(e) => handleInputChange(e, setUsername)}
+                        />
+
+                        <Typography className="-mb-2" variant="h6">
+                            Password
+                        </Typography>
+                        <Input
+                            type="password"
+                            size="lg"
+                            placeholder="********"
+                            className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                            labelProps={{
+                                className: "before:content-none after:content-none",
+                            }}
+                            value={password}
+                            onChange={(e) => handleInputChange(e, setPassword)}
+                        />
+
+                        <Typography className="-mb-2" variant="h6">
+                            Email
+                        </Typography>
+                        <Input
+                            label="Enter Code"
+                            size="lg"
+                            color="indigo"
+                            placeholder="name@mail.com"
+                            typeof="mail"
+                            value={email}
+                            onChange={(e) => handleInputChange(e, setEmail)}
+                        />
+
+                        <Typography variant="h6" className="-mb-2">
+                            Date of Birth
+                        </Typography>
+                        <MyDatePicker onDateChange={handleBirthdateChange} />
                     </CardBody>
                     <CardFooter className="pt-0 flex flex-row gap-4">
                         <Button

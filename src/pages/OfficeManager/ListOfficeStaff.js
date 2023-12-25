@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import axiosInstance from "../../functions/axiosInstance";
 import MyDatePicker from "../../Components/MyDatePicker";
+import Cookies from "js-cookie";
 
 import {
     Button,
@@ -15,11 +16,13 @@ import {
     Option,
 } from "@material-tailwind/react";
 
-export default function ListOfficeManager() {
+export default function ListOfficeStaff() {
     const [isFetch, setIsFetch] = useState(false);
     const [officeManager, setOfficeManager] = useState([]);
-    const [office, setOffice] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [district, setDistrict] = useState("");
+    const [postOfficeId, setPostOfficeId] = useState("");
+
     const [provinces, setProvinces] = useState([
         {
             postOfficeID: "",
@@ -28,58 +31,62 @@ export default function ListOfficeManager() {
         },
     ]);
 
+    const getRole = async () => {
+        try {
+            const response = await axiosInstance.get(`user/role`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get("jwt")}`,
+                },
+            });
+            setPostOfficeId(response.data.postOfficeID);
+            console.log(postOfficeId);
+            await fetchData();
+        } catch (error) {
+            // Handle errors
+            console.error("Error fetching role:", error);
+        }
+    };
+
     useEffect(() => {
         // Gọi API và cập nhật state khi component được render
-        fetchData();
+        getRole();
     }, [isFetch]); // Mảng dependencies trống rỗng, chỉ gọi một lần sau khi component được render đầu tiên
+
     const fetchData = async () => {
         try {
-            const response = await axiosInstance.get(`postoffice/all/postofficeManagers/`);
+            const roleResponse = await axiosInstance.get(`user/role`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get("jwt")}`,
+                },
+            });
+            setPostOfficeId(roleResponse.data.postOfficeID);
+
+            const response = await axiosInstance.get(
+                `user/officeStaff/${roleResponse.data.postOfficeID}`
+            );
+
+            const responseDistrict = await axiosInstance.get(
+                `postoffice/${roleResponse.data.postOfficeID}`
+            );
+            setDistrict(responseDistrict.data.postOffice.district);
 
             // Use Promise.all to wait for all async calls to getOfficeById
             const mapWarehouses = await Promise.all(
-                response.data.officeManagers.map(async (officeManager) => {
-                    const officeResponse = await getOfficeById(officeManager.postOfficeID);
-
+                response.data.officeStaffs.map(async (officeManager) => {
                     return {
                         id: officeManager.userID,
                         name: officeManager.name,
                         email: officeManager.email,
-                        district: officeResponse.data.postOffice.district,
+                        district: district,
                         birthdate: officeManager.birthdate.substring(0, 10),
                     };
                 })
             );
-            getAllOfficeWithoutManager();
             setOfficeManager(mapWarehouses);
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
         }
-    };
-
-    const getOfficeById = async (id) => {
-        try {
-            const response = await axiosInstance.get(`postoffice/${id}`);
-            // Return the response for further processing
-            return response;
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
-    };
-
-    const getAllOfficeWithoutManager = async () => {
-        const response = await axiosInstance.get(`postoffice/all/notHavePostOfficeManagers`);
-        const mapProvinces = response.data.postOfficesWithoutManager.map((office) => {
-            return {
-                postOfficeID: office.postOfficeID,
-                district: office.district,
-                belongToWarehouseID: office.belongToWarehouseID,
-            };
-        });
-        console.log(mapProvinces);
-        setProvinces(mapProvinces);
     };
 
     const handleButtonClick = (e, id) => {
@@ -106,11 +113,6 @@ export default function ListOfficeManager() {
         {
             name: "Name",
             selector: (row) => row.name,
-            sortable: true,
-        },
-        {
-            name: "Office",
-            selector: (row) => row.district,
             sortable: true,
         },
         {
@@ -181,7 +183,9 @@ export default function ListOfficeManager() {
 
     return (
         <div className="tableContainer w-[90%] mx-auto mt-3 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
-            <h1 className="font-bold font-quick pb-3 pt-3 text-center">List Office Manager</h1>
+            <h1 className="font-bold font-quick pb-3 pt-3 text-center">
+                List Office Staff in {district}
+            </h1>
             <div className="flex justify-between -mb-20">
                 <div className="w-full md:w-72 ml-2 mb-5">
                     <Input
@@ -192,7 +196,7 @@ export default function ListOfficeManager() {
                     />
                 </div>
             </div>
-            <DialogWithForm provinces={provinces} />
+            <DialogWithForm district={district} postOfficeId={postOfficeId} />
 
             <DataTable
                 className="px-2"
@@ -208,7 +212,7 @@ export default function ListOfficeManager() {
     );
 }
 
-function DialogWithForm({ provinces }) {
+function DialogWithForm({ district, postOfficeId }) {
     const [open, setOpen] = React.useState(false);
     const [managers, setManagers] = useState(["Nam", "Quang", "Thành"]);
     const [province, setProvince] = useState("");
@@ -233,18 +237,18 @@ function DialogWithForm({ provinces }) {
             name,
             email,
             birthdate: birthdate.toLocaleDateString("en-CA"), // Format to yyyy-mm-dd
-            postOfficeID: province.postOfficeID,
-            role: "officeManager",
+            postOfficeID: postOfficeId,
+            role: "officeStaff",
         };
 
         // Perform any necessary actions with the payload (e.g., send it to the server)
         console.log("Submit payload:", payload);
-        createNewOfficeManager(payload);
+        createNewOfficeStaff(payload);
         handleOpen();
         // window.location.reload(true);
     };
 
-    const createNewOfficeManager = async (payload) => {
+    const createNewOfficeStaff = async (payload) => {
         try {
             const response = await axiosInstance.request(`user/register`, {
                 method: "post",
@@ -270,25 +274,9 @@ function DialogWithForm({ provinces }) {
                 <Card className="mx-auto w-full">
                     <CardBody className="flex flex-col gap-3 h-[38rem] overflow-y-auto">
                         <Typography variant="h4" color="blue-gray" className="font-bold uppercase">
-                            Create Account for Office Manager
+                            Create Account for Staff in {district}
                         </Typography>
                         <hr className="bg-gray-200 border-b-4 w-full -mt-2" />
-
-                        <Typography className="-mb-2" variant="h6">
-                            Office
-                        </Typography>
-                        <Select
-                            label="Select Office"
-                            color="indigo"
-                            size="lg"
-                            onChange={(e) => setProvince(e)}
-                        >
-                            {provinces.map((province, index) => (
-                                <Option key={index} value={province}>
-                                    {province.district}
-                                </Option>
-                            ))}
-                        </Select>
 
                         <Typography className="-mb-2" variant="h6">
                             Name
@@ -345,16 +333,6 @@ function DialogWithForm({ provinces }) {
                             Date of Birth
                         </Typography>
                         <MyDatePicker onDateChange={handleBirthdateChange} />
-                        {/* <Typography className="-mb-2" variant="h6">
-                            Manager
-                        </Typography>
-                        <Select label="Select Manager" color="indigo" size="lg">
-                            {managers.map((manager, index) => (
-                                <Option key={index} value={manager}>
-                                    {manager}
-                                </Option>
-                            ))}
-                        </Select> */}
                     </CardBody>
                     <CardFooter className="pt-0 flex flex-row gap-4">
                         <Button

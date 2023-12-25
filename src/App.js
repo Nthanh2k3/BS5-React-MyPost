@@ -22,6 +22,12 @@ import ListWarehouse from "./pages/Boss/ListWarehouse.js";
 import ListOfficeManager from "./pages/Boss/ListOfficeManager.js";
 import ListWarehouseManager from "./pages/Boss/ListWarehouseManager.js";
 import StatisticAll from "./pages/Boss/StatisticAll.js";
+import StatisticOffice from "./pages/Boss/StatisticOffice.js";
+import StatisticWarehouse from "./pages/Boss/StatisticWarehouse.js";
+import HomeOfficeManager from "./pages/OfficeManager/HomeOfficeManager.jsx";
+import ListOfficeStaff from "./pages/OfficeManager/ListOfficeStaff.js";
+import HomeWarehouseManager from "./pages/WarehouseManager/HomeWarehouseManager.jsx";
+import ListWarehouseStaff from "./pages/WarehouseManager/ListWarehouseStaff.js";
 
 function App() {
     return (
@@ -39,6 +45,8 @@ function App() {
                     <Route path="testBoss" element={<HomeBoss />} />
 
                     {/**protected routes */}
+
+                    {/**Boss */}
                     <Route element={<BossRoute />}>
                         <Route path="boss" element={<HomeBoss />}>
                             <Route path="createAccount" element={<AccCreateByBoss />} />
@@ -47,6 +55,13 @@ function App() {
                             <Route path="office" element={<ListOffice />} />
                             <Route path="warehouse" element={<ListWarehouse />} />
                             <Route path="statistic/all" element={<StatisticAll />} />
+                            <Route path="statistic/office" element={<ListOffice />}></Route>
+                            <Route path="statistic/office/:id" element={<StatisticOffice />} />
+                            <Route path="statistic/warehouse" element={<ListWarehouse />}></Route>
+                            <Route
+                                path="statistic/warehouse/:id"
+                                element={<StatisticWarehouse />}
+                            />
                         </Route>
                     </Route>
 
@@ -54,16 +69,24 @@ function App() {
                         <Route path="warehouseStaff" element={<Hello />} />
                     </Route>
 
+                    {/** Warehouse Manager */}
                     <Route element={<WarehouseManagerRoute />}>
-                        <Route path="warehouseManager" element={<div>warehouseManager</div>} />
+                        <Route path="warehouseManager" element={<HomeWarehouseManager />}>
+                            <Route path="warehouseStaff" element={<ListWarehouseStaff />} />
+                            <Route path=":id" element={<StatisticWarehouse />} />
+                        </Route>
                     </Route>
 
                     <Route element={<OfficeStaffRoute />}>
                         <Route path="officeStaff" element={<div>officeStaff</div>} />
                     </Route>
 
+                    {/** Office Manager */}
                     <Route element={<OfficeManagerRoute />}>
-                        <Route path="officeManager" element={<div>officeManager</div>} />
+                        <Route path="officeManager" element={<HomeOfficeManager />}>
+                            <Route path="officeStaff" element={<ListOfficeStaff />} />
+                            <Route path=":id" element={<StatisticOffice />} />
+                        </Route>
                     </Route>
                 </Route>
             </Routes>
