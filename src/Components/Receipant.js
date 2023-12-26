@@ -7,7 +7,7 @@ import {
 
 function Receipant () {
     return(
-        <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-4 sm:my-10">
+    <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-4 sm:my-10">
   <div className="mb-5 pb-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
     <div>
         <h1 style={{fontFamily: "Cookie, serif", fontSize: 90, textAlign: "center"}}>
@@ -62,6 +62,28 @@ function Receipant () {
             <span className="block font-semibold">//Note//</span>
           </dd>
         </dl>
+        <dl className="grid sm:flex gap-x-3 text-sm">
+          <dt className="min-w-[150px] m;ax-w-[200px] text-gray-500">
+            Sender Commitment :
+          </dt>
+          <dd className="font-medium text-gray-800 dark:text-gray-200">
+            <span className="block font-semibold">
+            <label htmlFor="checkbox1" className="flex items-center">
+                    <input type="checkbox" id="checkbox1" className="form-checkbox" />
+                    <span className="ml-2">I accept the terms and regulations of MyPost. I hereby affirm that the statements above are accurate, and I take responsibility for the information provided.</span>
+            </label>
+
+            </span>
+          </dd>
+        </dl>
+        <dl className="grid sm:flex gap-x-3 text-sm">
+          <dt className="min-w-[150px] m;ax-w-[200px] text-gray-500">
+            Sender Signature:
+          </dt>
+          <dd className="font-medium text-gray-800 dark:text-gray-200">
+            <span className="block font-semibold">//Signature//</span>
+          </dd>
+        </dl>
       </div>
     </div>
     <div>
@@ -84,7 +106,7 @@ function Receipant () {
         </dl>
         <dl className="grid sm:flex gap-x-3 text-sm">
           <dt className="min-w-[150px] max-w-[200px] text-gray-500">
-            Date:
+            Date and Time:
           </dt>
           <dd className="font-medium text-gray-800 dark:text-gray-200">
             //Date Field//
@@ -192,6 +214,10 @@ function Receipant () {
           <dt className="col-span-3 text-gray-500">Due balance:</dt>
           <dd className="col-span-2 font-medium text-gray-800 dark:text-gray-200">$0.00</dd>
         </dl>
+      </div>
+      <div>
+    <label style={{textAlign:"right", fontSize: 20}}>Post Acceptance</label>
+
       </div>
     </div>
   </div>
