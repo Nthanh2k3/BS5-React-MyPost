@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import axiosInstance from "../../functions/axiosInstance";
 import MyDatePicker from "../../Components/MyDatePicker";
+import * as officeService from "../../apiService/officeService";
+import * as warehouseService from "../../apiService/warehouseService";
+import * as userService from "../../apiService/userService";
 
 import {
     Button,
@@ -18,7 +21,6 @@ import {
 export default function ListOfficeManager() {
     const [isFetch, setIsFetch] = useState(false);
     const [officeManager, setOfficeManager] = useState([]);
-    const [office, setOffice] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [provinces, setProvinces] = useState([
         {
@@ -34,23 +36,33 @@ export default function ListOfficeManager() {
     }, [isFetch]); // Mảng dependencies trống rỗng, chỉ gọi một lần sau khi component được render đầu tiên
     const fetchData = async () => {
         try {
-            const response = await axiosInstance.get(`postoffice/all/postofficeManagers/`);
+            const officeManagers = await officeService.getAllOfficeManager();
 
             // Use Promise.all to wait for all async calls to getOfficeById
             const mapWarehouses = await Promise.all(
-                response.data.officeManagers.map(async (officeManager) => {
-                    const officeResponse = await getOfficeById(officeManager.postOfficeID);
+                officeManagers.map(async (officeManager) => {
+                    const officeResponse = await officeService.getOfficeById(
+                        officeManager.postOfficeID
+                    );
 
                     return {
                         id: officeManager.userID,
                         name: officeManager.name,
                         email: officeManager.email,
-                        district: officeResponse.data.postOffice.district,
+                        district: officeResponse.district,
                         birthdate: officeManager.birthdate.substring(0, 10),
                     };
                 })
             );
-            getAllOfficeWithoutManager();
+            const allOfficeWithoutManager = await officeService.getAllOfficeWithoutManager();
+            const mapProvinces = allOfficeWithoutManager.map((office) => {
+                return {
+                    postOfficeID: office.postOfficeID,
+                    district: office.district,
+                    belongToWarehouseID: office.belongToWarehouseID,
+                };
+            });
+            setProvinces(mapProvinces);
             setOfficeManager(mapWarehouses);
         } catch (error) {
             // Handle errors
@@ -58,44 +70,12 @@ export default function ListOfficeManager() {
         }
     };
 
-    const getOfficeById = async (id) => {
-        try {
-            const response = await axiosInstance.get(`postoffice/${id}`);
-            // Return the response for further processing
-            return response;
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
-    };
-
-    const getAllOfficeWithoutManager = async () => {
-        const response = await axiosInstance.get(`postoffice/all/notHavePostOfficeManagers`);
-        const mapProvinces = response.data.postOfficesWithoutManager.map((office) => {
-            return {
-                postOfficeID: office.postOfficeID,
-                district: office.district,
-                belongToWarehouseID: office.belongToWarehouseID,
-            };
-        });
-        console.log(mapProvinces);
-        setProvinces(mapProvinces);
-    };
-
-    const handleButtonClick = (e, id) => {
+    const handleButtonClick = async (e, id) => {
         e.preventDefault();
-        deleteWarehouse(id);
+        await userService.deleteUserById(id);
+        setIsFetch(!isFetch);
     };
 
-    const deleteWarehouse = async (id) => {
-        try {
-            const response = await axiosInstance.delete(`warehouse/${id}`);
-            setIsFetch(!isFetch);
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
-    };
     const columns = [
         {
             name: "ID",

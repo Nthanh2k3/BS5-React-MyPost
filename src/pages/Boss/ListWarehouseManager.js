@@ -3,6 +3,8 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import axiosInstance from "../../functions/axiosInstance";
 import DatePicker from "react-datepicker";
+import * as warehouseService from "../../apiService/warehouseService";
+import * as userService from "../../apiService/userService";
 
 import {
     Button,
@@ -25,7 +27,6 @@ import MyDatePicker from "../../Components/MyDatePicker";
 export default function ListWarehouseManager() {
     const [isFetch, setIsFetch] = useState(false);
     const [warehouseManager, setWarehouseManager] = useState([]);
-    const [office, setOffice] = useState("");
     const [provinces, setProvinces] = useState([
         {
             province: "",
@@ -39,25 +40,36 @@ export default function ListWarehouseManager() {
         // Gọi API và cập nhật state khi component được render
         fetchData();
     }, [isFetch]); // Mảng dependencies trống rỗng, chỉ gọi một lần sau khi component được render đầu tiên
+
     const fetchData = async () => {
         try {
-            const response = await axiosInstance.get(`warehouse/all/warehouseManagers/`);
+            const warehouseManagers = await warehouseService.getAllWarehouseManager();
 
             // Use Promise.all to wait for all async calls to getOfficeById
             const mapWarehouses = await Promise.all(
-                response.data.warehouseManagers.map(async (warehouseManager) => {
-                    const warehouseResponse = await getWarehouseById(warehouseManager.warehouseID);
+                warehouseManagers.map(async (warehouseManager) => {
+                    const warehouseResponse = await warehouseService.getWarehouseById(
+                        warehouseManager.warehouseID
+                    );
 
                     return {
                         id: warehouseManager.userID,
                         name: warehouseManager.name,
                         email: warehouseManager.email,
-                        province: warehouseResponse.data.warehouse.province,
+                        province: warehouseResponse.province,
                         birthdate: warehouseManager.birthdate.substring(0, 10),
                     };
                 })
             );
-            getAllWarehouseWithoutManager();
+
+            const warehousesWithoutManager = await warehouseService.getAllWarehouseWithoutManager();
+            const mapProvinces = warehousesWithoutManager.map((warehouse) => {
+                return {
+                    province: warehouse.province,
+                    warehouseId: warehouse.warehouseID,
+                };
+            });
+            setProvinces(mapProvinces);
             setWarehouseManager(mapWarehouses);
         } catch (error) {
             // Handle errors
@@ -65,43 +77,12 @@ export default function ListWarehouseManager() {
         }
     };
 
-    const getWarehouseById = async (id) => {
-        try {
-            const response = await axiosInstance.get(`warehouse/${id}`);
-            // Return the response for further processing
-            return response;
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
-    };
-
-    const getAllWarehouseWithoutManager = async () => {
-        const response = await axiosInstance.get(`warehouse/all/notHaveWarehouseManagers`);
-        const mapProvinces = response.data.warehousesWithoutManager.map((warehouse) => {
-            return {
-                province: warehouse.province,
-                warehouseId: warehouse.warehouseID,
-            };
-        });
-        console.log(mapProvinces);
-        setProvinces(mapProvinces);
-    };
-
-    const handleButtonClick = (e, id) => {
+    const handleButtonClick = async (e, id) => {
         e.preventDefault();
-        deleteWarehouse(id);
+        await userService.deleteUserById(id);
+        setIsFetch(!isFetch);
     };
 
-    const deleteWarehouse = async (id) => {
-        try {
-            const response = await axiosInstance.delete(`warehouse/${id}`);
-            setIsFetch(!isFetch);
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
-    };
     const columns = [
         {
             name: "ID",
@@ -186,30 +167,37 @@ export default function ListWarehouseManager() {
     );
 
     return (
-        <div className="tableContainer w-[90%] mx-auto mt-3 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
-            <h1 className="font-bold font-quick pb-3 pt-3 text-center">List Warehouse Manager</h1>
-            <div className="flex justify-between -mb-20">
-                <div className="w-full md:w-72 ml-2 mb-5">
-                    <Input
-                        label="Search"
-                        icon={<i className="fa-solid fa-magnifying-glass" />}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-            </div>
-            <DialogWithForm provinces={provinces} />
+        <div className="">
+            <h1 className="font-bold font-quick pb-3 pt-3 pl-10 text-left uppercase">
+                List Warehouse Manager
+            </h1>
 
-            <DataTable
-                className="px-2"
-                columns={columns}
-                data={filteredWarehouseManager}
-                selectableRows
-                pagination
-                customStyles={customStyles}
-                highlightOnHover
-                pointerOnHover
-            />
+            <div className="tableContainer w-[90%] mx-auto mt-3 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
+                <Typography variant="h4" color="red" textGradient className="font-quick">
+                    Warehouse Manager
+                </Typography>
+                <div className="flex justify-between -mb-20 pt-4">
+                    <div className="w-full md:w-72 ml-2 mb-5">
+                        <Input
+                            label="Search"
+                            icon={<i className="fa-solid fa-magnifying-glass" />}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </div>
+                <DialogWithForm provinces={provinces} />
+
+                <DataTable
+                    className="px-3"
+                    columns={columns}
+                    data={filteredWarehouseManager}
+                    pagination
+                    customStyles={customStyles}
+                    highlightOnHover
+                    pointerOnHover
+                />
+            </div>
         </div>
     );
 }
@@ -247,7 +235,7 @@ function DialogWithForm({ provinces }) {
         console.log("Submit payload:", payload);
         createNewWarehouseManager(payload);
         handleOpen();
-        // window.location.reload(true);
+        window.location.reload(true);
     };
 
     const createNewWarehouseManager = async (payload) => {

@@ -12,7 +12,9 @@ class Home extends React.Component {
         return(
 <div>
   {/*HeaderSection*/}
+  <div className="fixed w-full z-50">
   <Header/>
+  </div>
   {/*QuickTrackSection*/}
   <TrackingBox/>
   {/*ServiceSection*/}

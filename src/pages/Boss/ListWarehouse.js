@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import * as warehouseService from "../../apiService/warehouseService";
 import DataTable from "react-data-table-component";
-import axios from "axios";
 import axiosInstance from "../../functions/axiosInstance";
 
 import {
@@ -27,7 +26,6 @@ export default function ListWarehouse() {
     const [provinces, setProvinces] = useState([]);
     const [isFetch, setIsFetch] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [open, setOpen] = React.useState(false);
 
     const navigate = useNavigate();
 
@@ -38,16 +36,15 @@ export default function ListWarehouse() {
 
     const fetchData = async () => {
         try {
-            const response = await axiosInstance.get(`warehouse/all`);
-            // Handle the response data
+            const warehouses = await warehouseService.getAllWarehouse();
 
             const mapWarehouses = await Promise.all(
-                response.data.warehouses.map(async (warehouse) => {
-                    const warehouseResponse = await getWarehouseManagerByWarehouseId(
-                        warehouse.warehouseID,
-                        warehouse
-                    );
-
+                warehouses.map(async (warehouse) => {
+                    const warehouseResponse =
+                        await warehouseService.getWarehouseManagerByWarehouseId(
+                            warehouse.warehouseID,
+                            warehouse
+                        );
                     return {
                         id: warehouse.warehouseID,
                         province: warehouse.province,
@@ -56,63 +53,26 @@ export default function ListWarehouse() {
                 })
             );
 
-            console.log(response.data);
-            const mapProvinces = response.data.warehouses.map((warehouse) => {
+            const mapProvinces = warehouses.map((warehouse) => {
                 return warehouse.province;
             });
 
             setWarehoues(mapWarehouses);
             setProvinces(mapProvinces);
         } catch (error) {
-            // Handle errors
             console.error("Error fetching data:", error);
         }
     };
 
-    const getWarehouseManagerByWarehouseId = async (id, warehouse) => {
-        try {
-            const response = await axiosInstance.get(`warehouse/manager/${id}`);
-            // Return the response for further processing
-            console.log(response);
-            return response;
-        } catch (error) {
-            // Handle errors
-
-            if (
-                error.response.data.message ==
-                "Warehouse manager not found for the specified warehouse"
-            ) {
-                const response1 = {
-                    data: {
-                        warehouseManager: {
-                            name: "None",
-                        },
-                    },
-                };
-                return response1;
-            }
-            console.error("Error fetching data:", error.response.data.message);
-        }
-    };
-
-    const handleButtonClick = (e, id) => {
+    const handleButtonClick = async (e, id) => {
         e.preventDefault();
-        deleteWarehouse(id);
-    };
-
-    const deleteWarehouse = async (id) => {
-        try {
-            const response = await axiosInstance.delete(`warehouse/${id}`);
-            setIsFetch(!isFetch);
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
+        await warehouseService.deleteWarehouseById(id);
+        setIsFetch(!isFetch);
     };
 
     const handleRowClick = (id) => {
-        console.log(id);
-        navigate(`/boss/statistic/warehouse/${id}`);
+        var encodedId = btoa(id);
+        navigate(`/boss/statistic/warehouse/${encodedId}`);
     };
 
     const columns = [
@@ -225,24 +185,10 @@ export function DialogWithForm({ provinces }) {
         setProvince(event.target.value);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         handleOpen();
-        createNewWarehouse();
+        await warehouseService.createNewWarehouse(province);
         window.location.reload(true);
-    };
-
-    const createNewWarehouse = async () => {
-        try {
-            const response = await axiosInstance.request(`warehouse/new`, {
-                method: "post",
-                data: {
-                    province: province,
-                },
-            });
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
     };
 
     return (
