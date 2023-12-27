@@ -1,21 +1,34 @@
 import { Checkbox } from "@material-tailwind/react";
 import Cookies from "js-cookie";
-import React from "react";
+import React, { useEffect } from "react";
 import {
     CheckBox
 } from '@material-tailwind/react'
+import QRCode from "qrcode-react";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 function Receipant () {
+    const [fullURL,setFullURL] = React.useState('');
+    useEffect(() => {
+      // Get  full URL and update the state
+      const currentURL = window.location.href;
+      setFullURL(currentURL);
+    }, []);
+  
     return(
     <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-4 sm:my-10">
   <div className="mb-5 pb-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
-    <div>
-        <h1 style={{fontFamily: "Cookie, serif", fontSize: 90, textAlign: "center"}}>
-            MyPost
-        </h1>
-      <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Receipt</h2>
-    </div>
-
+        <div className="flex items-center">
+          <h1 style={{ fontFamily: 'Cookie, serif', fontSize: 90, textAlign: 'center' }}>
+               MyPost
+          </h1>
+        </div>
+         <div className="flex items-center">
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Receipt</h2>
+          </div>
+          <div className="flex items-center">
+          {fullURL && <QRCode value={fullURL} />}
+          </div>
   </div>
   <div className="grid md:grid-cols-2 gap-3">
     <div>
