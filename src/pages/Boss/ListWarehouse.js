@@ -49,6 +49,7 @@ export default function ListWarehouse() {
                         id: warehouse.warehouseID,
                         province: warehouse.province,
                         manager: warehouseResponse.data.warehouseManager.name,
+                        address: warehouse.address,
                     };
                 })
             );
@@ -77,10 +78,10 @@ export default function ListWarehouse() {
 
     const columns = [
         {
-            name: "Warehouse Code",
+            name: "Code",
             selector: (row) => row.id,
             sortable: true,
-            width: "25%",
+            width: "10%",
         },
         {
             name: "Warehouse",
@@ -91,6 +92,12 @@ export default function ListWarehouse() {
             name: "Manager",
             selector: (row) => row.manager,
             sortable: true,
+        },
+        {
+            name: "Address",
+            selector: (row) => row.address,
+            sortable: true,
+            width: "35%",
         },
         {
             name: "Actions",
@@ -141,13 +148,15 @@ export default function ListWarehouse() {
         },
     };
 
-    const filteredWarehouses = warehouses.filter((warehouse) =>
-        warehouse.province.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredWarehouses = warehouses.filter(
+        (warehouse) =>
+            warehouse.province.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            warehouse.address.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
-        <div className="tableContainer w-[90%] mx-auto mt-3 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
-            <h1 className="font-bold font-quick pb-3 pt-3 text-center">List Warehouse</h1>
+        <div className="tableContainer w-[90%] mx-auto mt-3 ">
+            <h1 className="font-bold font-quick pb-3 pt-3 text-center uppercase">List Warehouse</h1>
             <div className="flex justify-between -mb-20">
                 <div className="w-full md:w-72 ml-2 mb-5">
                     <Input
@@ -158,27 +167,29 @@ export default function ListWarehouse() {
                     />
                 </div>
             </div>
-            <DialogWithForm provinces={provinces} />
+            <DialogWithForm proinces={provinces} />
 
-            <DataTable
-                className="px-2"
-                columns={columns}
-                data={filteredWarehouses}
-                selectableRows
-                pagination
-                customStyles={customStyles}
-                highlightOnHover
-                pointerOnHover
-                onRowClicked={(row, e) => handleRowClick(row.id)}
-            />
+            <div className="z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] pt-3">
+                <DataTable
+                    className="px-2"
+                    columns={columns}
+                    data={filteredWarehouses}
+                    pagination
+                    customStyles={customStyles}
+                    highlightOnHover
+                    pointerOnHover
+                    onRowClicked={(row, e) => handleRowClick(row.id)}
+                />
+            </div>
         </div>
     );
 }
 
 export function DialogWithForm({ provinces }) {
     const [open, setOpen] = React.useState(false);
-    const [managers, setManagers] = useState(["Nam", "Quang", "Thành"]);
     const [province, setProvince] = useState("");
+    const [address, setAddress] = useState("");
+
     const handleOpen = () => setOpen((cur) => !cur);
 
     const handleInputChange = (event) => {
@@ -220,19 +231,15 @@ export function DialogWithForm({ provinces }) {
                             onChange={handleInputChange}
                         />
                         <Typography className="-mb-2" variant="h6">
-                            Warehouse Code
+                            Address
                         </Typography>
-                        <Input label="Enter Code" size="lg" color="indigo" />
-                        {/* <Typography className="-mb-2" variant="h6">
-                            Manager
-                        </Typography> */}
-                        {/* <Select label="Select Manager" color="indigo" size="lg">
-                            {managers.map((manager, index) => (
-                                <Option key={index} value={manager}>
-                                    {manager}
-                                </Option>
-                            ))}
-                        </Select> */}
+                        <Input
+                            label="Enter Address"
+                            size="lg"
+                            color="indigo"
+                            value={address}
+                            onChange={(e) => handleInputChange(e, setAddress)}
+                        />
                     </CardBody>
                     <CardFooter className="pt-0 flex flex-row gap-4">
                         <Button

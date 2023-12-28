@@ -13,7 +13,6 @@ function Header() {
                     paddingBottom: 10,
                 }}
             >
-                
                 <div className="container">
                     <button
                         data-bs-toggle="collapse"
@@ -25,10 +24,10 @@ function Header() {
                     </button>
 
                     <div>
-                    <a className="navbar-brand" href="/#">
+                        <a className="navbar-brand" href="/home">
                             <span style={{ fontFamily: "Cookie, serif", fontSize: 50 }}>
                                 MyPost
-                            </span>{" "}
+                            </span>
                         </a>
                     </div>
                     <div>
@@ -36,7 +35,7 @@ function Header() {
                             <li className="nav-item">
                                 <a
                                     className="nav-link active"
-                                    href="/index.html"
+                                    href="/home"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
                                 >
                                     Home
@@ -94,36 +93,19 @@ function Header() {
                         <Link
                             className="btn btn-light action-button"
                             role="button"
-                            href="/signup.html"
                             style={{
                                 color: "rgba(0,0,0,0.9)",
                                 background: "var(--bs-gray-200)",
                                 borderRadius: 10,
                                 borderStyle: "solid",
                                 borderColor: "rgba(0,0,0,0.9)",
-                                fontSize: 16,
+                                fontSize: 28,
                                 padding: "5px 8px",
+                                fontFamily: "Cookie, serif",
                             }}
                             to={"/login"}
                         >
                             Login
-                        </Link>
-                        <Link
-                            className="btn btn-light action-button"
-                            role="button"
-                            href="/signup.html"
-                            style={{
-                                color: "rgba(0,0,0,0.9)",
-                                background: "var(--bs-gray-200)",
-                                borderRadius: 10,
-                                borderStyle: "solid",
-                                borderColor: "rgba(0,0,0,0.9)",
-                                fontSize: 16,
-                                padding: "5px 8px",
-                            }}
-                            to={"/signup"}
-                        >
-                            Sign Up
                         </Link>
                     </p>
                 </div>

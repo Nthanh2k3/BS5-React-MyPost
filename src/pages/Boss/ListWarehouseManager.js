@@ -168,14 +168,10 @@ export default function ListWarehouseManager() {
 
     return (
         <div className="">
-            <h1 className="font-bold font-quick pb-3 pt-3 pl-10 text-left uppercase">
-                List Warehouse Manager
-            </h1>
-
-            <div className="tableContainer w-[90%] mx-auto mt-3 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
-                <Typography variant="h4" color="red" textGradient className="font-quick">
-                    Warehouse Manager
-                </Typography>
+            <div className="tableContainer w-[90%] mx-auto mt-3 ">
+                <h1 className="font-bold font-quick pb-3 pt-3 text-center uppercase">
+                    List Warehouse Manager
+                </h1>
                 <div className="flex justify-between -mb-20 pt-4">
                     <div className="w-full md:w-72 ml-2 mb-5">
                         <Input
@@ -187,16 +183,17 @@ export default function ListWarehouseManager() {
                     </div>
                 </div>
                 <DialogWithForm provinces={provinces} />
-
-                <DataTable
-                    className="px-3"
-                    columns={columns}
-                    data={filteredWarehouseManager}
-                    pagination
-                    customStyles={customStyles}
-                    highlightOnHover
-                    pointerOnHover
-                />
+                <div className="z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] pt-3">
+                    <DataTable
+                        className="px-3"
+                        columns={columns}
+                        data={filteredWarehouseManager}
+                        pagination
+                        customStyles={customStyles}
+                        highlightOnHover
+                        pointerOnHover
+                    />
+                </div>
             </div>
         </div>
     );

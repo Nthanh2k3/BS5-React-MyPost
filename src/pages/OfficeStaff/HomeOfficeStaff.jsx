@@ -7,6 +7,7 @@ import * as wareHouseStaffService from "../../apiService/wareHouseStaffService"
 import Cookies from "js-cookie";
 import { Button } from "@material-tailwind/react";
 import HeaderOfficeStaff from "../../Components/HeaderOfficeStaff";
+import HeaderBoss from "../../Components/HeaderBoss";
 
 
 function HomeOfficeStaff() {
@@ -37,7 +38,7 @@ function HomeOfficeStaff() {
 
     return (
         <div className="">
-            <HeaderOfficeStaff/>
+            <HeaderBoss/>
             {/* <Button onClick={testFunction}>Click</Button> */}
             <div className="flex h-full">
                 <div className="w-60">

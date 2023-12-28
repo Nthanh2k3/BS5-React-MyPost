@@ -19,7 +19,7 @@ export const getAllOfficeWithoutManager = async () => {
     return response.data.postOfficesWithoutManager;
 };
 
-export const createNewOffice = async (district, province) => {
+export const createNewOffice = async (district, province, address) => {
     try {
         const response = await axiosInstance.request(
             `postoffice/new/warehouseID=${province.warehouseId}`,
@@ -27,6 +27,7 @@ export const createNewOffice = async (district, province) => {
                 method: "post",
                 data: {
                     district: district,
+                    address: address,
                 },
             }
         );

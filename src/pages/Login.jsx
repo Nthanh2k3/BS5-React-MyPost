@@ -1,51 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import SignupAlert from "../Components/SignupAlert";
 import LoginForm from "../Components/LoginForm";
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
-
-// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsInJvbGUiOiJjaHVfYnV1X2N1YyIsImlhdCI6MTcwMjgwNTkwOH0.TzvbEH8Mc9cjIWaheL6a37EJEVtS61DT5uYyjxQpjB4";
-// const decoded = jwtDecode(token);
-
-// console.log(decoded);
+import { useNavigate } from "react-router";
+import Cookies from "js-cookie";
 
 function Login() {
-    // const [token, setToken] = useState("")
-    
-        
-    // const axiosConfig = {
-    //     method: "post",
-    //     data: {
-    //         "username": "nam",
-    //         "password": "nam"
-    //     } ,
-    // };
-    // const fetchData = async () => {
-    //     try {
-    //         const response = await axios.request(
-    //             `https://uniformly-mighty-mite.ngrok-free.app/user/login`,
-    //             axiosConfig
-    //         );
-    //         // Handle the response data
-    //         console.log(response.data);
-    //         setToken(response.data.token)
-    //     } catch (error) {
-    //         // Handle errors
-    //         console.error("Error fetching data:", error);
-    //     }
-    // };
-    
-    // fetchData()
+    const navigate = useNavigate()
+    const fetchData = async () => {
+        try {
+            const roleResponse = Cookies.get("role")
+            switch (roleResponse) {
+                case "boss":
+                    navigate("/boss");
+                    break;
+                case "warehouseStaff":
+                    navigate("/warehouseStaff");
+                    break;
+
+                case "warehouseManager":
+                    navigate("/warehouseManager");
+                    break;
+
+                case "officeStaff":
+                    navigate("/officeStaff");
+                    break;
+
+                case "officeManager":
+                    navigate("/officeManager");
+                    break;
+            }
+
+            
+        } catch (error) {
+            // Handle errors
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    useEffect(() => {
+            fetchData()
+    },[])
 
     return(
-    <div>
-        <Header/>
-        {/* <SignupAlert/> */}
-        <LoginForm/>
-        <Footer/>
-    </div>
- )
+        <div>
+            <Header/>
+            <LoginForm/>
+            <Footer/>
+        </div>
+    )
 }
 export default Login;

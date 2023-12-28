@@ -20,12 +20,13 @@ export const getAllWarehouseWithoutManager = async () => {
     return response.data.warehousesWithoutManager;
 };
 
-export const createNewWarehouse = async (province) => {
+export const createNewWarehouse = async (province, address) => {
     try {
         const response = await axiosInstance.request(`warehouse/new`, {
             method: "post",
             data: {
                 province: province,
+                address: address,
             },
         });
     } catch (error) {

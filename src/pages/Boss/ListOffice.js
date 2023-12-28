@@ -55,6 +55,7 @@ export default function ListOffice() {
                         district: office.district,
                         province: warehouseResponse.province,
                         manager: officeResponse.data.postOfficeManager.name,
+                        address: office.address,
                     };
                 })
             );
@@ -90,10 +91,10 @@ export default function ListOffice() {
 
     const columns = [
         {
-            name: "Office Code",
+            name: "Code",
             selector: (row) => row.id,
             sortable: true,
-            width: "20%",
+            width: "10%",
         },
         {
             name: "Office",
@@ -111,9 +112,15 @@ export default function ListOffice() {
             sortable: true,
         },
         {
+            name: "Address",
+            selector: (row) => row.address,
+            sortable: true,
+            width: "30%",
+        },
+        {
             name: "Actions",
             button: true,
-            width: "15%",
+            width: "10%",
             cell: (row) => (
                 <div className="flex flex-row">
                     <button
@@ -162,12 +169,13 @@ export default function ListOffice() {
     const filteredWarehouses = offices.filter(
         (office) =>
             office.district.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            office.province.toLowerCase().includes(searchQuery.toLowerCase())
+            office.province.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            office.address.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
-        <div className="tableContainer w-[90%] mx-auto mt-3 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
-            <h1 className="font-bold font-quick pb-3 pt-3 text-center">List Office</h1>
+        <div className="tableContainer w-[90%] mx-auto mt-3 ">
+            <h1 className="font-bold font-quick pb-3 pt-3 text-center uppercase">List Office</h1>
             <div className="flex justify-between -mb-20">
                 <div className="w-full md:w-72 ml-2 mb-5">
                     <Input
@@ -179,20 +187,20 @@ export default function ListOffice() {
                 </div>
             </div>
             <DialogWithForm provinces={provinces} />
+            <div className="z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] pt-3">
+                <DataTable
+                    className="px-2"
+                    columns={columns}
+                    data={filteredWarehouses}
+                    pagination
+                    customStyles={customStyles}
+                    highlightOnHover
+                    pointerOnHover
+                    onRowClicked={(row, e) => handleRowClick(row.id)}
+                />
 
-            <DataTable
-                className="px-2"
-                columns={columns}
-                data={filteredWarehouses}
-                selectableRows
-                pagination
-                customStyles={customStyles}
-                highlightOnHover
-                pointerOnHover
-                onRowClicked={(row, e) => handleRowClick(row.id)}
-            />
-
-            <Outlet />
+                <Outlet />
+            </div>
         </div>
     );
 }
@@ -200,6 +208,8 @@ export default function ListOffice() {
 function DialogWithForm({ provinces }) {
     const [open, setOpen] = React.useState(false);
     const [district, setDistrict] = useState("");
+    const [address, setAddress] = useState("");
+
     const [province, setProvince] = useState("");
     const handleOpen = () => setOpen((cur) => !cur);
 
@@ -209,7 +219,7 @@ function DialogWithForm({ provinces }) {
 
     const handleSubmit = () => {
         handleOpen();
-        officeService.createNewOffice(district, province);
+        officeService.createNewOffice(district, province, address);
         window.location.reload(true);
     };
 
@@ -240,6 +250,17 @@ function DialogWithForm({ provinces }) {
                             color="indigo"
                             value={district}
                             onChange={(e) => handleInputChange(e, setDistrict)}
+                        />
+
+                        <Typography className="-mb-2" variant="h6">
+                            Address
+                        </Typography>
+                        <Input
+                            label="Enter Address"
+                            size="lg"
+                            color="indigo"
+                            value={address}
+                            onChange={(e) => handleInputChange(e, setAddress)}
                         />
 
                         <Typography className="-mb-2" variant="h6">

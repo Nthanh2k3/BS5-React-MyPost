@@ -160,8 +160,10 @@ export default function ListOfficeManager() {
     );
 
     return (
-        <div className="tableContainer w-[90%] mx-auto mt-3 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
-            <h1 className="font-bold font-quick pb-3 pt-3 text-center">List Office Manager</h1>
+        <div className="tableContainer w-[90%] mx-auto mt-3 ">
+            <h1 className="font-bold font-quick pb-3 pt-3 text-center uppercase">
+                List Office Manager
+            </h1>
             <div className="flex justify-between -mb-20">
                 <div className="w-full md:w-72 ml-2 mb-5">
                     <Input
@@ -173,17 +175,17 @@ export default function ListOfficeManager() {
                 </div>
             </div>
             <DialogWithForm provinces={provinces} />
-
-            <DataTable
-                className="px-2"
-                columns={columns}
-                data={filteredOfficeManager}
-                selectableRows
-                pagination
-                customStyles={customStyles}
-                highlightOnHover
-                pointerOnHover
-            />
+            <div className="z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] pt-3">
+                <DataTable
+                    className="px-2"
+                    columns={columns}
+                    data={filteredOfficeManager}
+                    pagination
+                    customStyles={customStyles}
+                    highlightOnHover
+                    pointerOnHover
+                />
+            </div>
         </div>
     );
 }
@@ -325,16 +327,6 @@ function DialogWithForm({ provinces }) {
                             Date of Birth
                         </Typography>
                         <MyDatePicker onDateChange={handleBirthdateChange} />
-                        {/* <Typography className="-mb-2" variant="h6">
-                            Manager
-                        </Typography>
-                        <Select label="Select Manager" color="indigo" size="lg">
-                            {managers.map((manager, index) => (
-                                <Option key={index} value={manager}>
-                                    {manager}
-                                </Option>
-                            ))}
-                        </Select> */}
                     </CardBody>
                     <CardFooter className="pt-0 flex flex-row gap-4">
                         <Button
