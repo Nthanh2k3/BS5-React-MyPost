@@ -68,3 +68,8 @@ export const getWarehouseManagerByWarehouseId = async (id) => {
         console.error("Error fetching data:", error.response.data.message);
     }
 };
+
+export const getAllOfficeInWarehouse = async (warehouseId) => {
+    const response = await axiosInstance.get(`postoffice/byWarehouse/warehouseID=${warehouseId}`);
+    return response.data.postOffices;
+};

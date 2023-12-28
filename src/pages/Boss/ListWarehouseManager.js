@@ -339,16 +339,6 @@ function DialogWithForm({ provinces }) {
                             Date of Birth
                         </Typography>
                         <MyDatePicker onDateChange={handleBirthdateChange} />
-                        {/* <Typography className="-mb-2" variant="h6">
-                            Manager
-                        </Typography>
-                        <Select label="Select Manager" color="indigo" size="lg">
-                            {managers.map((manager, index) => (
-                                <Option key={index} value={manager}>
-                                    {manager}
-                                </Option>
-                            ))}
-                        </Select> */}
                     </CardBody>
                     <CardFooter className="pt-0 flex flex-row gap-4">
                         <Button

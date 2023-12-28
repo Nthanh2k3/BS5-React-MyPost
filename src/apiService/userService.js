@@ -17,6 +17,7 @@ export const getRole = async () => {
                 Authorization: `Bearer ${Cookies.get("jwt")}`,
             },
         });
+        console.log(response.data);
         return response.data;
     } catch (error) {
         // Handle errors
