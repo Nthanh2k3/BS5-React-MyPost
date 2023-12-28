@@ -16,6 +16,7 @@ import {
     CardBody,
     Select,
     Option,
+    IconButton,
 } from "@material-tailwind/react";
 
 export default function StatisticWarehouse() {
@@ -57,6 +58,23 @@ export default function StatisticWarehouse() {
             selector: (row) => row.status,
             sortable: true,
         },
+        {
+            name: "Action",
+            button: true,
+            width: "15%",
+            cell: (row) => (
+                <div>
+                    <IconButton
+                        variant="text"
+                        size="lg"
+                        color="teal"
+                        onClick={(e) => handleViewOrder(row.id)}
+                    >
+                        <i className="fa-solid fa-eye fa-xl"></i>
+                    </IconButton>
+                </div>
+            ),
+        },
     ];
 
     const customStyles = {
@@ -85,6 +103,10 @@ export default function StatisticWarehouse() {
         },
     };
 
+    const handleViewOrder = (orderId) => {
+        const encodeId = btoa(orderId);
+        window.open(`/bill/${encodeId}`);
+    };
     const fetchData = async () => {
         try {
             const orders = await orderService.getOrdersByWarehouse(warehouseId);
@@ -103,7 +125,7 @@ export default function StatisticWarehouse() {
                     id: order.orderID,
                     sender: order.senderName,
                     recipent: order.recipientName,
-                    status: "SendedToRecWH",
+                    status: "Sended to Recipient Warehouse",
                 };
             });
 
@@ -112,7 +134,7 @@ export default function StatisticWarehouse() {
                     id: order.orderID,
                     sender: order.senderName,
                     recipent: order.recipientName,
-                    status: "SendedToRecPO",
+                    status: "Sended to Recipient Office",
                 };
             });
 
@@ -145,19 +167,7 @@ export default function StatisticWarehouse() {
             <h1 className="font-bold font-quick pb-3 pt-3 text-center uppercase">
                 All Orders in {province}
             </h1>
-            {/* <h1 className="font-bold font-quick pb-3 pt-3 text-left pl-7">
-                Hàng trong kho: {totalInsideOrder}
-            </h1> */}
 
-            {/* <div className="w-[80%] mx-auto p-4 h-auto">
-                <PieChart
-                    series={[
-                        totalInsideOrder,
-                        totalSendedOrder,
-                        totalInsideOrder + totalSendedOrder,
-                    ]}
-                />
-            </div> */}
             <Tabs value="Statistic">
                 <TabsHeader>
                     <Tab key="Statistic" value="Statistic">
@@ -240,8 +250,12 @@ export default function StatisticWarehouse() {
                                 >
                                     <Option value="All">All</Option>
                                     <Option value="Inside">Inside</Option>
-                                    <Option value="SendedToRecWH">Sended to Warehouse</Option>
-                                    <Option value="SendedToRecPO">Sended to Office</Option>
+                                    <Option value="Sended to Recipient Warehouse">
+                                        Sended to Warehouse
+                                    </Option>
+                                    <Option value="Sended to Recipient Office">
+                                        Sended to Office
+                                    </Option>
                                 </Select>
                             </div>
                             <DataTable

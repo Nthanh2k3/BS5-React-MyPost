@@ -44,7 +44,10 @@ function App() {
                     <Route path="home" element={<Home />} />
                     <Route path="login" element={<Login />} />
                     <Route path="signup" element={<Signup />} />
-                    <Route path="tracking" element={<Tracking />} />
+                    <Route path="tracking" element={<Tracking />}></Route>
+                    <Route path="tracking/:id" element={<Tracking />} />
+                    <Route path="bill/:id" element={<Receipant />} />
+
                     <Route path="*" element={<Home />} />
 
                     {/**protected routes */}

@@ -11,7 +11,7 @@ function HomeBoss() {
             <div className="sticky top-0 w-full z-50">
                 <HeaderBoss/>
                <div className="flex flex-row h-full">
-               <div className="sticky left-0 top-0 h-max z-20">
+               <div className="h-max ">
                     <Sidebar />
                 </div>
                 <div className="bg-gray-50 w-full">
