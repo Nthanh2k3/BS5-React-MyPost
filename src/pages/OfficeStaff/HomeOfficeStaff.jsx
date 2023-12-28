@@ -1,4 +1,3 @@
-import Header from "../../Components/Header"
 import { Outlet } from "react-router-dom";
 import SidebarForOS from "./SidebarForOS";
 import React, { useEffect, useState } from "react";
@@ -7,6 +6,7 @@ import * as officeStaffService from "../../apiService/officeStaffService"
 import * as wareHouseStaffService from "../../apiService/wareHouseStaffService"
 import Cookies from "js-cookie";
 import { Button } from "@material-tailwind/react";
+import HeaderOfficeStaff from "../../Components/HeaderOfficeStaff";
 
 
 function HomeOfficeStaff() {
@@ -37,7 +37,7 @@ function HomeOfficeStaff() {
 
     return (
         <div className="">
-            <Header/>
+            <HeaderOfficeStaff/>
             {/* <Button onClick={testFunction}>Click</Button> */}
             <div className="flex h-full">
                 <div className="w-60">

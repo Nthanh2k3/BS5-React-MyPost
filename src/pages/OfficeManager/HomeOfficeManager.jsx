@@ -4,6 +4,7 @@ import SidebarForOM from "./SidebarForOM";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../functions/axiosInstance";
 import Cookies from "js-cookie";
+import HeaderOfficeManager from "../../Components/HeaderBoss";
 
 
 function HomeOfficeManager() {
@@ -29,7 +30,7 @@ function HomeOfficeManager() {
 
     return (
         <div className="">
-            <Header/>
+            <HeaderOfficeManager/>
             <div className="flex h-full">
                 <div className="w-60">
                     <SidebarForOM postOfficeId={postOfficeId}/>
