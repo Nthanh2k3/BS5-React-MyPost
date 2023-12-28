@@ -1,6 +1,7 @@
 import React from "react";
 import { Avatar , Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function HeaderWarehouseManager() {
     return (
         <header>
@@ -91,7 +92,7 @@ function HeaderWarehouseManager() {
                         <Avatar src="/assets/img/Boss.jpg" alt="avatar" />
                         
                             <Typography variant="h6">Warehouse Manager</Typography>
-                        
+                            <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" style={{color: "#ffffff",}} />
                     </div>
                     
                     <div>
