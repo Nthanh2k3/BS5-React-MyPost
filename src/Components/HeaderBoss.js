@@ -1,6 +1,9 @@
 import React from "react";
-import { Avatar , Typography } from "@material-tailwind/react";
+import { Avatar , Button, IconButton, Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 function HeaderBoss() {
     return (
         <header>
@@ -11,93 +14,19 @@ function HeaderBoss() {
                     borderStyle: "none",
                     paddingTop: 0,
                     paddingBottom: 10,
-                }}
-            >
-                <div className="container">
-                    <button
-                        data-bs-toggle="collapse"
-                        className="navbar-toggler"
-                        data-bs-target="/#navcol-1"
-                    >
-                        <span className="visually-hidden">Toggle navigation</span>
-                        <span className="navbar-toggler-icon" />
-                    </button>
-                    <div>
-                        <a className="navbar-brand" href="/#">
-                            <span style={{ fontFamily: "Cookie, serif", fontSize: 50 }}>
+                }}>
+                <a className="navbar-brand p-50" href="/#">
+                            <span style={{ fontFamily: "Cookie, serif", fontSize: 50, textAlign:"left", padding: 30}}>
                                 MyPost
-                            </span>{" "}
-                        </a>
-                    </div>
-                    <div>
-                        <ul className="navbar-nav nav-right">
-                            <li className="nav-item">
-                                <a
-                                    className="nav-link active"
-                                    href="/index.html"
-                                    style={{ color: "rgba(224,217,217,0.9)" }}
-                                >
-                                    Home
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a
-                                    className="nav-link"
-                                    href="about.html"
-                                    style={{ color: "rgba(224,217,217,0.9)" }}
-                                >
-                                    About
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a
-                                    className="nav-link"
-                                    href="faq.html"
-                                    style={{ color: "rgba(224,217,217,0.9)" }}
-                                >
-                                    Service
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <Link
-                                    className="nav-link"
-                                    style={{ color: "rgba(224,217,217,0.9)" }}
-                                    to={"/tracking"}
-                                >
-                                    Tracking
-                                </Link>
-                            </li>
-                            <li className="nav-item">
-                                <a
-                                    className="nav-link"
-                                    href="contact.html"
-                                    style={{ color: "rgba(224,217,217,0.9)" }}
-                                >
-                                    Pricing
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a
-                                    className="nav-link active"
-                                    href="/index.html"
-                                    style={{ color: "rgba(224,217,217,0.9)" }}
-                                >
-                                    Contact&nbsp;
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Avatar src="/assets/img/Boss.jpg" alt="avatar" />
-                        
-                            <Typography variant="h6">Boss</Typography>
-                        
-                    </div>
-                    
-                    <div>
-
-                    </div>
+                            </span>
+                </a>
+                <div style={{display:"flex", flexDirection:"row", marginLeft:"auto"} }>
+                        <Avatar src="/assets/img/Boss.jpg" alt="avatar" style={{}}/>
+                        <Button>
+                            <img src="/assets/img/white-logout.svg" alt="logout" style={{width: 22,height:22}}/>
+                        </Button>
                 </div>
+                
             </nav>
         </header>
     );

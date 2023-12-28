@@ -13,6 +13,7 @@ function Header() {
                     paddingBottom: 10,
                 }}
             >
+                
                 <div className="container">
                     <button
                         data-bs-toggle="collapse"
@@ -22,8 +23,9 @@ function Header() {
                         <span className="visually-hidden">Toggle navigation</span>
                         <span className="navbar-toggler-icon" />
                     </button>
+
                     <div>
-                        <a className="navbar-brand" href="/#">
+                    <a className="navbar-brand" href="/#">
                             <span style={{ fontFamily: "Cookie, serif", fontSize: 50 }}>
                                 MyPost
                             </span>{" "}
