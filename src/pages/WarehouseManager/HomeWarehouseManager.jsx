@@ -1,9 +1,9 @@
-import Header from "../../Components/Header"
 import { Outlet } from "react-router-dom";
 import SidebarForWM from "./SidebarForWM";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../functions/axiosInstance";
 import Cookies from "js-cookie";
+import HeaderWarehouseManager from "../../Components/HeaderWarehouseManager";
 
 
 function HomeWarehouseManager() {
@@ -29,7 +29,7 @@ function HomeWarehouseManager() {
 
     return (
         <div className="">
-            <Header/>
+            <HeaderWarehouseManager/>
             <div className="flex h-full">
                 <div className="w-60">
                     <SidebarForWM warehouseId={warehouseId}/>

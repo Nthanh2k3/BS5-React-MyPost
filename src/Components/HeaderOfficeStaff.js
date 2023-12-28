@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar , Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
-function HeaderWhenLoggedIn() {
+function HeaderOfficeStaff() {
     return (
         <header>
             <nav
@@ -90,7 +90,7 @@ function HeaderWhenLoggedIn() {
                     <div className="flex items-center gap-4">
                         <Avatar src="/assets/img/Boss.jpg" alt="avatar" />
                         
-                            <Typography variant="h6">7 Chọ</Typography>
+                            <Typography variant="h6">Office Staff</Typography>
                         
                     </div>
                     
@@ -102,4 +102,4 @@ function HeaderWhenLoggedIn() {
         </header>
     );
 }
-export default HeaderWhenLoggedIn;
+export default HeaderOfficeStaff;
