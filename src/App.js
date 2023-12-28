@@ -34,6 +34,8 @@ import CreateNewOrder from "./pages/OfficeStaff/CreatNewOrder.js";
 import OrderStatus from "./pages/OfficeStaff/OrderStatus.js";
 import HomeWarehouseStaff from "./pages/WarehouseStaff.js/HomeWarehouseStaff.jsx";
 import WarehouseOrderStatus from "./pages/WarehouseStaff.js/WarehouseOrderStatus.js";
+import TrackingWithID from "./Components/TrackingWithID.js";
+import PageNotFound from "./Components/PageNotFound.js";
 
 function App() {
     return (
@@ -45,10 +47,10 @@ function App() {
                     <Route path="login" element={<Login />} />
                     <Route path="signup" element={<Signup />} />
                     <Route path="tracking" element={<Tracking />}></Route>
-                    <Route path="tracking/:id" element={<Tracking />} />
+                    <Route path="tracking/:id" element={<TrackingWithID />} />
                     <Route path="bill/:id" element={<Receipant />} />
 
-                    <Route path="*" element={<Home />} />
+                    <Route path="*" element={<PageNotFound />} />
 
                     {/**protected routes */}
 

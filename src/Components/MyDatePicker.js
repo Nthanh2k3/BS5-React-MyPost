@@ -18,7 +18,6 @@ const MyDatePicker = ({ onDateChange }) => {
                 selected={selectedDate}
                 onChange={handleDateChange}
                 dateFormat="yyyy-MM-dd" // Định dạng ngày tháng
-                isClearable // Hiển thị nút xóa
                 placeholderText="Select a date"
             />
         </div>

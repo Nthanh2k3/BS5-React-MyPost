@@ -118,12 +118,6 @@ export default function ListWarehouseManager() {
             cell: (row) => (
                 <div className="flex flex-row">
                     <button
-                        className="btn btn-outline btn-xs"
-                        onClick={(e) => handleButtonClick(e, row.id)}
-                    >
-                        <i class="fa-solid fa-pen-to-square fa-beat"></i>
-                    </button>
-                    <button
                         className="btn btn-outline btn-xs ml-2"
                         onClick={(e) => handleButtonClick(e, row.id)}
                     >
@@ -285,7 +279,7 @@ function DialogWithForm({ provinces }) {
                             Name
                         </Typography>
                         <Input
-                            label="Enter Code"
+                            label="Enter Name"
                             size="lg"
                             color="indigo"
                             placeholder="Name"
@@ -297,7 +291,7 @@ function DialogWithForm({ provinces }) {
                             Username
                         </Typography>
                         <Input
-                            label="Enter Code"
+                            label="Enter Username"
                             size="lg"
                             color="indigo"
                             value={username}
@@ -323,7 +317,7 @@ function DialogWithForm({ provinces }) {
                             Email
                         </Typography>
                         <Input
-                            label="Enter Code"
+                            label="Enter Email"
                             size="lg"
                             color="indigo"
                             placeholder="name@mail.com"

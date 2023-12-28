@@ -3,16 +3,17 @@ import axiosInstance from "../functions/axiosInstance";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import * as orderService from "../apiService/orderService";
+import { faListSquares } from "@fortawesome/free-solid-svg-icons";
 
-export default function Tracking() {
-    const [orderId, setOrderId] = useState("");
+export default function TrackingWithID() {
     const [orderData, setOrderData] = useState([]);
     const [timeEvents, setTimeEvents] = useState([]);
     const [timeSuccess, setTimeSuccess] = useState("");
     const [path, setPath] = useState([]);
-
+    const param = useParams();
+    const [orderId, setOrderId] = useState(atob(param.id));
     const navigate = useNavigate();
 
     useEffect(() => {

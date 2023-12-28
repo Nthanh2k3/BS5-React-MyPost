@@ -24,7 +24,7 @@ function HeaderBoss() {
                     paddingBottom: 10,
                 }}
             >
-                <a className="navbar-brand p-50" href="/boss">
+                <Link className="navbar-brand p-50" to="/home">
                     <span
                         style={{
                             fontFamily: "Cookie, serif",
@@ -35,7 +35,7 @@ function HeaderBoss() {
                     >
                         MyPost
                     </span>
-                </a>
+                </Link>
                 <div style={{ display: "flex", flexDirection: "row", marginLeft: "auto" }}>
                     <Avatar src="/assets/img/Boss.jpg" alt="avatar" style={{}} />
                     <Button onClick={handleSignOut}>
@@ -51,9 +51,3 @@ function HeaderBoss() {
     );
 }
 export default HeaderBoss;
-
-function signOut(navigate) {
-    // Cookies.remove("jwt");
-    // Cookies.remove("role");
-    navigate(`/home`);
-}

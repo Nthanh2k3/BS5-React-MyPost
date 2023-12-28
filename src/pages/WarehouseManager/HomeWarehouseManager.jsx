@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../functions/axiosInstance";
 import Cookies from "js-cookie";
 import HeaderWarehouseManager from "../../Components/HeaderWarehouseManager";
+import HeaderBoss from "../../Components/HeaderBoss";
 
 
 function HomeWarehouseManager() {
@@ -29,7 +30,7 @@ function HomeWarehouseManager() {
 
     return (
         <div className="">
-            <HeaderWarehouseManager/>
+            <HeaderBoss/>
             <div className="flex h-full">
                 <div className="w-60">
                     <SidebarForWM warehouseId={warehouseId}/>

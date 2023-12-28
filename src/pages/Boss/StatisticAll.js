@@ -14,7 +14,9 @@ import {
     CardBody,
     Select,
     Option,
+    IconButton,
 } from "@material-tailwind/react";
+
 export default function StatisticAll() {
     const [inputOrder, setInputOrder] = useState([]);
     const [successOrder, setSuccessOrder] = useState([]);
@@ -33,7 +35,7 @@ export default function StatisticAll() {
             name: "OrderID",
             selector: (row) => row.id,
             sortable: true,
-            width: "25%",
+            width: "15%",
         },
         {
             name: "Sender",
@@ -49,8 +51,31 @@ export default function StatisticAll() {
             name: "Status",
             selector: (row) => row.status,
             sortable: true,
+            width: "20%",
+        },
+        {
+            name: "Action",
+            button: true,
+            width: "20%",
+            cell: (row) => (
+                <div>
+                    <IconButton
+                        variant="text"
+                        size="lg"
+                        color="teal"
+                        onClick={(e) => handleViewOrder(row.id)}
+                    >
+                        <i className="fa-solid fa-eye fa-xl"></i>
+                    </IconButton>
+                </div>
+            ),
         },
     ];
+
+    const handleViewOrder = (orderId) => {
+        const encodeId = btoa(orderId);
+        window.open(`/bill/${encodeId}`);
+    };
 
     const customStyles = {
         header: {

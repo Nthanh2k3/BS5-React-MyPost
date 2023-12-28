@@ -37,7 +37,8 @@ function Receipant() {
     useEffect(() => {
         // Get  full URL and update the state
         const currentURL = window.location.href;
-        setFullURL(currentURL);
+        const trackURL = currentURL.replace("bill", "tracking");
+        setFullURL(trackURL);
         fetchData();
     }, []);
 
@@ -156,7 +157,7 @@ function Receipant() {
                                     Sender Signature:
                                 </dt>
                                 <dd className="font-medium text-gray-800 dark:text-gray-200">
-                                    <span className="block font-semibold">//Signature//</span>
+                                    <span className="block font-semibold"></span>
                                 </dd>
                             </dl>
                         </div>
@@ -192,7 +193,7 @@ function Receipant() {
                                     Billing method:
                                 </dt>
                                 <dd className="font-medium text-gray-800 dark:text-gray-200">
-                                    //Billing Method Field//
+                                    COD
                                 </dd>
                             </dl>
                         </div>

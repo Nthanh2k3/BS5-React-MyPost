@@ -124,12 +124,6 @@ export default function ListOffice() {
             cell: (row) => (
                 <div className="flex flex-row">
                     <button
-                        className="btn btn-outline btn-xs"
-                        onClick={(e) => handleButtonClick(e, row.id)}
-                    >
-                        <i class="fa-solid fa-pen-to-square fa-beat"></i>
-                    </button>
-                    <button
                         className="btn btn-outline btn-xs ml-2"
                         onClick={(e) => handleButtonClick(e, row.id)}
                     >

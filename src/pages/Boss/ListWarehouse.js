@@ -106,12 +106,6 @@ export default function ListWarehouse() {
             cell: (row) => (
                 <div className="flex flex-row">
                     <button
-                        className="btn btn-outline btn-xs"
-                        onClick={(e) => handleButtonClick(e, row.id)}
-                    >
-                        <i class="fa-solid fa-pen-to-square fa-beat"></i>
-                    </button>
-                    <button
                         className="btn btn-outline btn-xs ml-2"
                         onClick={(e) => handleButtonClick(e, row.id)}
                     >
@@ -192,13 +186,13 @@ export function DialogWithForm({ provinces }) {
 
     const handleOpen = () => setOpen((cur) => !cur);
 
-    const handleInputChange = (event) => {
-        setProvince(event.target.value);
+    const handleInputChange = (event, setState) => {
+        setState(event.target.value);
     };
 
     const handleSubmit = async () => {
         handleOpen();
-        await warehouseService.createNewWarehouse(province);
+        await warehouseService.createNewWarehouse(province, address);
         window.location.reload(true);
     };
 
@@ -228,7 +222,7 @@ export function DialogWithForm({ provinces }) {
                             size="lg"
                             color="indigo"
                             value={province}
-                            onChange={handleInputChange}
+                            onChange={(e) => handleInputChange(e, setProvince)}
                         />
                         <Typography className="-mb-2" variant="h6">
                             Address

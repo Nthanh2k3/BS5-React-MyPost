@@ -7,6 +7,7 @@ import Chart from "react-apexcharts";
 
 export default function BarChart({ data, state }) {
     const status = state == "order" ? "imported" : "delivered successfully to customers";
+    const header = state == "order" ? "IMPORTED" : "SUCCESSFULL SHIPPING";
     const chartConfig = {
         type: "bar",
         height: 240,
@@ -107,8 +108,8 @@ export default function BarChart({ data, state }) {
             >
                 <div className=" rounded-lg bg-gray-900 text-white h-12 w-12 items-center"></div>
                 <div>
-                    <Typography variant="h6" color="blue-gray">
-                        Order Inside
+                    <Typography variant="h6" color="blue-gray" className="uppercase">
+                        {header} Order
                     </Typography>
                     <Typography variant="small" color="gray" className="max-w-sm font-normal">
                         Orders which are {status} accorrding months from January to December 2023
