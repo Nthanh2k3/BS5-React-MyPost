@@ -11,7 +11,7 @@ export default function Tracking() {
     const [orderId, setOrderId] = useState("");
     const [orderData, setOrderData] = useState([]);
     const [timeEvents, setTimeEvents] = useState([]);
-    const [isSuccsses, setIsSuccess] = useState(false);
+    const [timeSuccess, setTimeSuccess] = useState("");
     const [path, setPath] = useState([]);
     const navigate = useNavigate();
 
@@ -30,9 +30,9 @@ export default function Tracking() {
             setOrderData(response.data);
             setTimeEvents(response.data.order.processTime);
 
-            const isSuccsses = response.data.order.timeSuccess != null ? true : false;
             console.log(response.data.order.timeSuccess);
-            setIsSuccess(isSuccsses);
+            setTimeSuccess(response.data.order.timeSuccess);
+            console.log(timeSuccess);
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
@@ -99,7 +99,11 @@ export default function Tracking() {
                     <div class=" justify-center w-[70%] pt-10">
                         {orderData.order ? (
                             <>
-                                <TrackInfo events={timeEvents} paths={path} success={isSuccsses} />
+                                <TrackInfo
+                                    events={timeEvents}
+                                    paths={path}
+                                    timeSuccess={timeSuccess}
+                                />
                             </>
                         ) : (
                             <div class="p-10">Nothing found</div>
@@ -112,8 +116,7 @@ export default function Tracking() {
     );
 }
 
-function TrackInfo({ events, paths, success }) {
-    const isSuccsses = events.length > 8;
+function TrackInfo({ events, paths, timeSuccess }) {
     return (
         <div className="container font-quick border-solid border-collapse border border-slate-500 p-4">
             <h1 className="text-4xl font-quick mb-2 font-bold">Order History</h1>
@@ -129,31 +132,45 @@ function TrackInfo({ events, paths, success }) {
                 <tbody>
                     {events.map((event, index) => (
                         <tr key={index}>
-                            <td>
-                                <i className="fa-solid fa-truck-fast fa-xl p-3"></i>
+                            <td className="text-center">
+                                <i className="fa-solid fa-truck-fast fa-xl p-3"> </i>
                             </td>
                             <td className="font-quick">
-                                {renderContentBasedOnIndex(index, paths, success)}
+                                {renderContentBasedOnIndex(index, paths)}
                             </td>
-                            <td className="font-bold font-quick">{events[index]}</td>
+                            <td className="font-bold font-quick text-center">
+                                {events[index].substring(0, 10)}
+                            </td>
                         </tr>
                     ))}
+                    {timeSuccess != undefined && renderTimeSuccess(timeSuccess)}
                 </tbody>
             </table>
         </div>
     );
 }
 
-function renderContentBasedOnIndex(index, path, success) {
+function renderTimeSuccess(timeSuccess) {
+    return (
+        <tr>
+            <td className="text-center">
+                <i className="fa-solid fa-truck-fast fa-xl p-3"></i>
+            </td>
+            <td>
+                <div>Hàng đã được chuyển đến người nhận thành công</div>
+            </td>
+            <td className="font-bold font-quick text-center">{timeSuccess.substring(0, 10)}</td>
+        </tr>
+    );
+}
+
+function renderContentBasedOnIndex(index, path) {
     if (index > 7 && index % 2 == 0) {
-        if (success)
-            return <div class="font-quick">Hàng đã được chuyển đến người nhận thành công</div>;
-        else
-            return (
-                <div class="font-quick">
-                    Giao hàng đến người nhận thất bại và trở về {path.po2.district}
-                </div>
-            );
+        return (
+            <div class="font-quick">
+                Giao hàng đến người nhận thất bại và trở về {path.po2.district}
+            </div>
+        );
     }
     if (index > 7 && index % 2 == 1) {
         return (

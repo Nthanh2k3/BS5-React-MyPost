@@ -16,6 +16,7 @@ import {
     CardBody,
     Select,
     Option,
+    IconButton,
 } from "@material-tailwind/react";
 export default function StatisticOffice() {
     const params = useParams();
@@ -57,6 +58,23 @@ export default function StatisticOffice() {
             selector: (row) => row.status,
             sortable: true,
         },
+        {
+            name: "Action",
+            button: true,
+            width: "15%",
+            cell: (row) => (
+                <div>
+                    <IconButton
+                        variant="text"
+                        size="lg"
+                        color="teal"
+                        onClick={(e) => handleViewOrder(row.id)}
+                    >
+                        <i className="fa-solid fa-eye fa-xl"></i>
+                    </IconButton>
+                </div>
+            ),
+        },
     ];
 
     const customStyles = {
@@ -83,6 +101,11 @@ export default function StatisticOffice() {
                 fontSize: "14px",
             },
         },
+    };
+
+    const handleViewOrder = (orderId) => {
+        const encodeId = btoa(orderId);
+        window.open(`/bill/${encodeId}`);
     };
 
     const fetchData = async () => {
@@ -151,13 +174,6 @@ export default function StatisticOffice() {
     return (
         <div className="tableContainer w-[90%] mx-auto mt-3 ">
             <h1 className="font-bold font-quick pb-3 pt-3 text-center">Orders in {district} </h1>
-
-            {/* <h1 className="font-bold font-quick pb-3 pt-3 text-left pl-7">
-                Hàng đã được gửi đi: {totalSendedOrder}
-            </h1> */}
-            {/* <div className="w-[80%] mx-auto p-4 h-auto">
-                <PieChart series={[totalInsideOrder, orders.size]} />
-            </div> */}
             <Tabs value="Statistic">
                 <TabsHeader>
                     <Tab key="Statistic" value="Statistic">
@@ -267,7 +283,6 @@ export default function StatisticOffice() {
                                 className="p-4"
                                 columns={columns}
                                 data={filteredOrders}
-                                selectableRows
                                 pagination
                                 customStyles={customStyles}
                                 highlightOnHover

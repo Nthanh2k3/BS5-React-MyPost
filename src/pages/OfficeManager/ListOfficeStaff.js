@@ -192,7 +192,7 @@ function DialogWithForm({ district, postOfficeId }) {
         setBirthdate(date);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const payload = {
             username,
             password,
@@ -205,7 +205,7 @@ function DialogWithForm({ district, postOfficeId }) {
 
         // Perform any necessary actions with the payload (e.g., send it to the server)
         console.log("Submit payload:", payload);
-        userService.createNewAccount(payload);
+        await userService.createNewAccount(payload);
         handleOpen();
         window.location.reload(true);
     };
