@@ -4,7 +4,8 @@ import DataTable from "react-data-table-component";
 import axiosInstance from "../../functions/axiosInstance";
 import * as officeService from "../../apiService/officeService";
 import * as orderService from "../../apiService/orderService";
-import PieChart from "../../Components/PieChart";
+import * as statisticService from "../../apiService/statisticService";
+
 import {
     Tabs,
     TabsHeader,
@@ -18,6 +19,7 @@ import {
     Option,
     IconButton,
 } from "@material-tailwind/react";
+import LineChart from "../../Components/LineChart";
 export default function StatisticOffice() {
     const params = useParams();
     const postOfficeId = atob(params.id);
@@ -27,6 +29,8 @@ export default function StatisticOffice() {
     const [totalSendToSenderWH, setTotalSendToSenderWH] = useState("");
     const [totalSendToShip, setTotalSendToShip] = useState("");
     const [totalShipSuccess, setTotalShipSuccess] = useState("");
+    const [inputOrder, setInputOrder] = useState([]);
+    const [successOrder, setSuccessOrder] = useState([]);
 
     const [orders, setOrders] = useState([
         {
@@ -110,6 +114,10 @@ export default function StatisticOffice() {
 
     const fetchData = async () => {
         try {
+            const statistic = await statisticService.getStaticOrderInOffice(postOfficeId);
+            setInputOrder(statistic.order);
+            setSuccessOrder(statistic.success);
+
             const orders = await orderService.getOrdersByOffice(postOfficeId);
 
             const mapOrdersInside = orders.inside.map((order) => {
@@ -290,7 +298,20 @@ export default function StatisticOffice() {
                             />
                         </div>
                     </TabPanel>
-                    <TabPanel key="Chart" value="Chart"></TabPanel>
+                    <TabPanel key="Chart" value="Chart">
+                        <LineChart
+                            series={[
+                                {
+                                    name: "Imported Order",
+                                    data: inputOrder,
+                                },
+                                {
+                                    name: "Success Shipping Order",
+                                    data: successOrder,
+                                },
+                            ]}
+                        />
+                    </TabPanel>
                 </TabsBody>
             </Tabs>
         </div>

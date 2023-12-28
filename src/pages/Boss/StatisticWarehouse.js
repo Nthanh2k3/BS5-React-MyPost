@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
-import axiosInstance from "../../functions/axiosInstance";
-import PieChart from "../../Components/PieChart";
 import * as orderService from "../../apiService/orderService";
 import * as warehouseService from "../../apiService/warehouseService";
+import * as statisticService from "../../apiService/statisticService";
+
 import {
     Tabs,
     TabsHeader,
@@ -18,6 +18,7 @@ import {
     Option,
     IconButton,
 } from "@material-tailwind/react";
+import LineChart from "../../Components/LineChart";
 
 export default function StatisticWarehouse() {
     const params = useParams();
@@ -27,6 +28,8 @@ export default function StatisticWarehouse() {
     const [totalInsideOrder, setTotalInsideOrder] = useState("");
     const [totalSendedToRecWH, setTotalSendedToRecWH] = useState("");
     const [totalSendedToRecPO, setTotalSendedToRecPO] = useState("");
+    const [inputOrder, setInputOrder] = useState([]);
+    const [successOrder, setSuccessOrder] = useState([]);
 
     const [orders, setOrders] = useState([
         {
@@ -109,6 +112,9 @@ export default function StatisticWarehouse() {
     };
     const fetchData = async () => {
         try {
+            const statistic = await statisticService.getStaticOrderInWarehouse(warehouseId);
+            setInputOrder(statistic.order);
+
             const orders = await orderService.getOrdersByWarehouse(warehouseId);
 
             const mapOrdersInside = orders.inside.map((order) => {
@@ -269,7 +275,16 @@ export default function StatisticWarehouse() {
                             />
                         </div>
                     </TabPanel>
-                    <TabPanel key="Chart" value="Chart"></TabPanel>
+                    <TabPanel key="Chart" value="Chart">
+                        <LineChart
+                            series={[
+                                {
+                                    name: "Imported Order",
+                                    data: inputOrder,
+                                },
+                            ]}
+                        />
+                    </TabPanel>
                 </TabsBody>
             </Tabs>
         </div>

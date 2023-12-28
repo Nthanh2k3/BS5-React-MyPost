@@ -1,21 +1,11 @@
 import { Card, CardBody, CardHeader, Typography } from "@material-tailwind/react";
 import Chart from "react-apexcharts";
 
-// If you're using Next.js please use the dynamic import for react-apexcharts and remove the import from the top for the react-apexcharts
-// import dynamic from "next/dynamic";
-// const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-
-export default function BarChart({ data, state }) {
-    const status = state == "order" ? "imported" : "delivered successfully to customers";
+export default function LineChart({ series }) {
     const chartConfig = {
-        type: "bar",
+        type: "line",
         height: 240,
-        series: [
-            {
-                name: "Number of Orders",
-                data: data,
-            },
-        ],
+        series: series,
         options: {
             chart: {
                 toolbar: {
@@ -28,12 +18,13 @@ export default function BarChart({ data, state }) {
             dataLabels: {
                 enabled: false,
             },
-            colors: ["#020617"],
-            plotOptions: {
-                bar: {
-                    columnWidth: "40%",
-                    borderRadius: 2,
-                },
+            colors: ["#020617", "#FF1654"],
+            stroke: {
+                lineCap: "round",
+                curve: "smooth",
+            },
+            markers: {
+                size: 0,
             },
             xaxis: {
                 axisTicks: {
@@ -107,11 +98,12 @@ export default function BarChart({ data, state }) {
             >
                 <div className=" rounded-lg bg-gray-900 text-white h-12 w-12 items-center"></div>
                 <div>
-                    <Typography variant="h6" color="blue-gray">
-                        Order Inside
+                    <Typography variant="h6" color="blue-gray" className="uppercase">
+                        Chart Order
                     </Typography>
                     <Typography variant="small" color="gray" className="max-w-sm font-normal">
-                        Orders which are {status} accorrding months from January to December 2023
+                        Display imported orders and succesfull shipping orders from January to
+                        December 2023
                     </Typography>
                 </div>
             </CardHeader>
