@@ -5,11 +5,17 @@ export default function Sidebar() {
             {/* Sidenav */}
             <nav
                 id="sidenav-8"
-                className="sticky w-45 h-screen -translate-x-full bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 dark:bg-zinc-800"
+                className=" z-[1035] w-60 h-max -translate-x-full bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 dark:bg-zinc-800"
                 data-te-sidenav-init=""
                 data-te-sidenav-hidden="false"
                 data-te-sidenav-accordion="true"
-                style={{position:"sticky",zIndex: 1 , top: 100 , left: 0,scrollBehavior: "smooth"}}
+                style={{
+                    position: "sticky",
+                    zIndex: 1,
+                    top: 100,
+                    left: 0,
+                    scrollBehavior: "smooth",
+                }}
             >
                 <ul
                     className="relative m-0 list-none px-[0.2rem] pb-12"

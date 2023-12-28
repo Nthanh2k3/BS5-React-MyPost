@@ -43,3 +43,15 @@ export const updateFinalWarehouseToOffice = async (orderID) => {
         console.error("Error fetching data:", error);
     }
 };
+
+export const getAllComingOrder = async (warehouseId) => {
+    try {
+        const response = await axiosInstance.request(`/warehouse/allOrdersComing/${warehouseId}`, {
+            method: "get",
+        });
+        return response.data.orders;
+    } catch (error) {
+        // Handle errors
+        console.error("Error fetching data:", error);
+    }
+};

@@ -19,15 +19,21 @@ import {
     Option,
 } from "@material-tailwind/react";
 export default function OrderStatus() {
+    const [isFetch, setIsFetch] = useState(false);
     const params = useParams();
     const postOfficeId = atob(params.id);
     const [status, setStatus] = useState("All");
     const [district, setDistrict] = useState();
-    const [totalInsideOrder, setTotalInsideOrder] = useState("");
-    const [totalSendToSenderWH, setTotalSendToSenderWH] = useState("");
-    const [totalSendToShip, setTotalSendToShip] = useState("");
-    const [totalShipSuccess, setTotalShipSuccess] = useState("");
     const [comingOrder, setComingOrder] = useState([
+        {
+            id: "",
+            sender: "",
+            recipient: "",
+            status: "",
+        },
+    ]);
+
+    const [insideToWHOrder, setInsideToWHOrder] = useState([
         {
             id: "",
             sender: "",
@@ -36,7 +42,15 @@ export default function OrderStatus() {
         },
     ]);
 
-    const [insideToWHOrder, setInsideToWHOrder] = useState([
+    const [insideToCusOrder, setInsideToCusOrder] = useState([
+        {
+            id: "",
+            sender: "",
+            recipent: "",
+            status: "",
+        },
+    ]);
+    const [shippingOrder, setShippingOrder] = useState([
         {
             id: "",
             sender: "",
@@ -66,7 +80,7 @@ export default function OrderStatus() {
             sortable: true,
         },
         {
-            name: "Recipent",
+            name: "Recipient",
             selector: (row) => row.recipient,
             sortable: true,
         },
@@ -88,6 +102,55 @@ export default function OrderStatus() {
                 >
                     <i className="fa-solid fa-circle-check fa-xl"></i>
                 </IconButton>
+            ),
+        },
+    ];
+
+    const columnsShipping = [
+        {
+            name: "OrderID",
+            selector: (row) => row.id,
+            sortable: true,
+            width: "25%",
+        },
+        {
+            name: "Sender",
+            selector: (row) => row.sender,
+            sortable: true,
+        },
+        {
+            name: "Recipient",
+            selector: (row) => row.recipient,
+            sortable: true,
+        },
+        {
+            name: "Status",
+            selector: (row) => row.status,
+            sortable: true,
+        },
+        {
+            name: "Confirm",
+            button: true,
+            width: "15%",
+            cell: (row) => (
+                <div>
+                    <IconButton
+                        variant="text"
+                        size="lg"
+                        color="green"
+                        onClick={(e) => handleConfirmShippingOrder(row.id, "Success")}
+                    >
+                        <i className="fa-solid fa-circle-check fa-xl"></i>
+                    </IconButton>
+                    <IconButton
+                        variant="text"
+                        size="lg"
+                        color="red"
+                        onClick={(e) => handleConfirmShippingOrder(row.id, "Failed")}
+                    >
+                        <i className="fa-solid fa-circle-xmark fa-xl"></i>
+                    </IconButton>
+                </div>
             ),
         },
     ];
@@ -121,11 +184,30 @@ export default function OrderStatus() {
     const handleConfirmComingOrder = async (orderId, orderStatus) => {
         switch (orderStatus) {
             case "Inside To Warehouse":
-                const response = officeStaffService.updateFinalWarehouseToOffice(orderId);
+                await officeStaffService.updateFirstOfficeToWarehouse(orderId);
+                break;
+            case "Incoming":
+                await officeStaffService.updateFinalWarehouseToOffice(orderId);
+                break;
+            case "Inside To Customer":
+                await officeStaffService.updateSendToShip(orderId);
                 break;
         }
-        // const response = officeStaffService.updateFinalWarehouseToOffice(orderId);
+        setIsFetch(!isFetch);
     };
+
+    const handleConfirmShippingOrder = async (orderId, orderStatus) => {
+        switch (orderStatus) {
+            case "Success":
+                await officeStaffService.updateTimeSuccess(orderId);
+                break;
+            case "Failed":
+                await officeStaffService.updateShipFailled(orderId);
+                break;
+        }
+        setIsFetch(!isFetch);
+    };
+
     const fetchData = async () => {
         try {
             const orders = await orderService.getOrdersByOffice(postOfficeId);
@@ -136,7 +218,7 @@ export default function OrderStatus() {
                 return {
                     id: order.orderID,
                     sender: order.senderName,
-                    recipent: order.recipientName,
+                    recipient: order.recipientName,
                     status: "Incoming",
                 };
             });
@@ -151,8 +233,35 @@ export default function OrderStatus() {
                     status: "Inside To Warehouse",
                 }));
             console.log(mapOrdersInsideToWarehouse);
-
             setInsideToWHOrder(mapOrdersInsideToWarehouse);
+
+            const mapOrdersInsideToCustomer = orders.inside
+                .filter((order) => order.processTime.length == 7)
+                .map((order) => ({
+                    id: order.orderID,
+                    sender: order.senderName,
+                    recipient: order.recipientName,
+                    status: "Inside To Customer",
+                }));
+            const mapOrderShipFailed = orders.isShipFailed.map((order) => {
+                return {
+                    id: order.orderID,
+                    sender: order.senderName,
+                    recipient: order.recipientName,
+                    status: "Inside To Customer",
+                };
+            });
+            setInsideToCusOrder(mapOrdersInsideToCustomer.concat(mapOrderShipFailed));
+
+            const mapOrderSendToShip = orders.sendToShip.map((order) => {
+                return {
+                    id: order.orderID,
+                    sender: order.senderName,
+                    recipient: order.recipientName,
+                    status: "Shipping",
+                };
+            });
+            setShippingOrder(mapOrderSendToShip);
 
             const mapOrdersInside = orders.inside.map((order) => {
                 return {
@@ -195,10 +304,6 @@ export default function OrderStatus() {
             setDistrict(postOffice.district);
 
             setOrders(allOrders);
-            setTotalInsideOrder(mapOrdersInside.length);
-            setTotalSendToSenderWH(mapOrdersSendtoSenderWH.length);
-            setTotalSendToShip(mapOrdersSendToShip.length);
-            setTotalShipSuccess(mapOrdersShipSuccess.length);
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
@@ -207,16 +312,16 @@ export default function OrderStatus() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [isFetch]);
 
-    const filteredOrders = orders.filter((order) => {
-        return status == "All" || order.status.toLowerCase() == status.toLowerCase();
-    });
+    // const filteredOrders = orders.filter((order) => {
+    //     return status == "All" || order.status.toLowerCase() == status.toLowerCase();
+    // });
 
     return (
         <div className="tableContainer w-[90%] mx-auto mt-3 ">
             <h1 className="font-bold font-quick pb-3 pt-3 text-center">Orders in {district} </h1>
-            <Tabs value="Inside">
+            <Tabs value="Coming">
                 <TabsHeader>
                     <Tab key="Coming" value="Coming">
                         <i className="fa-solid fa-right-to-bracket h-full pr-2"></i>
@@ -238,19 +343,6 @@ export default function OrderStatus() {
                 <TabsBody>
                     <TabPanel key="Coming" value="Coming">
                         <div className="mx-2 mb-2 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
-                            <div className="w-[10%] mx-2 pt-4">
-                                <Select
-                                    label="Choose Status"
-                                    color="indigo"
-                                    size="lg"
-                                    onChange={(value) => setStatus(value)}
-                                >
-                                    <Option value="All">All</Option>
-                                    <Option value="sendToSenderWH">Send To Sender WH</Option>
-                                    <Option value="sendToShip">sendToShip</Option>
-                                    <Option value="shipSuccess">Ship Success</Option>
-                                </Select>
-                            </div>
                             <DataTable
                                 className="p-4"
                                 columns={columns}
@@ -265,19 +357,6 @@ export default function OrderStatus() {
                     </TabPanel>
                     <TabPanel key="Warehouse" value="Warehouse">
                         <div className="mx-2 mb-2 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
-                            <div className="w-[10%] mx-2 pt-4">
-                                <Select
-                                    label="Choose Status"
-                                    color="indigo"
-                                    size="lg"
-                                    onChange={(value) => setStatus(value)}
-                                >
-                                    <Option value="All">All</Option>
-                                    <Option value="sendToSenderWH">Send To Sender WH</Option>
-                                    <Option value="sendToShip">sendToShip</Option>
-                                    <Option value="shipSuccess">Ship Success</Option>
-                                </Select>
-                            </div>
                             <DataTable
                                 className="p-4"
                                 columns={columns}
@@ -290,7 +369,34 @@ export default function OrderStatus() {
                             />
                         </div>
                     </TabPanel>
-                    <TabPanel key="Chart" value="Chart"></TabPanel>
+                    <TabPanel key="Cusotmer" value="Customer">
+                        <div className="mx-2 mb-2 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
+                            <DataTable
+                                className="p-4"
+                                columns={columns}
+                                data={insideToCusOrder}
+                                selectableRows
+                                pagination
+                                customStyles={customStyles}
+                                highlightOnHover
+                                pointerOnHover
+                            />
+                        </div>
+                    </TabPanel>
+                    <TabPanel key="Shipping" value="Shipping">
+                        <div className="mx-2 mb-2 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
+                            <DataTable
+                                className="p-4"
+                                columns={columnsShipping}
+                                data={shippingOrder}
+                                selectableRows
+                                pagination
+                                customStyles={customStyles}
+                                highlightOnHover
+                                pointerOnHover
+                            />
+                        </div>
+                    </TabPanel>
                 </TabsBody>
             </Tabs>
         </div>

@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import axiosInstance from "../functions/axiosInstance";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router";
+import * as orderService from "../apiService/orderService";
+import { faListSquares } from "@fortawesome/free-solid-svg-icons";
 
 export default function Tracking() {
     const [orderId, setOrderId] = useState("");
     const [orderData, setOrderData] = useState([]);
     const [timeEvents, setTimeEvents] = useState([]);
-    const events = ["0", "1", "2", "3", "4", "5", "6", "7", "8"];
+    const [timeSuccess, setTimeSuccess] = useState("");
+    const [path, setPath] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Gọi API và cập nhật state khi component được render
@@ -19,9 +23,16 @@ export default function Tracking() {
     const fetchData = async () => {
         try {
             const response = await axiosInstance.get(`orders/id=${orderId}`);
+            const path = await orderService.getPathOfOrder(orderId);
+            console.log(path);
+            setPath(path);
             // Handle the response data
             setOrderData(response.data);
             setTimeEvents(response.data.order.processTime);
+
+            console.log(response.data.order.timeSuccess);
+            setTimeSuccess(response.data.order.timeSuccess);
+            console.log(timeSuccess);
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
@@ -29,6 +40,8 @@ export default function Tracking() {
     };
     const handleInputChange = () => {
         setOrderId(document.getElementById("orderIdInput").value);
+        const encodeId = btoa(document.getElementById("orderIdInput").value);
+        navigate(`/tracking/${encodeId}`);
     };
 
     return (
@@ -86,12 +99,14 @@ export default function Tracking() {
                     <div class=" justify-center w-[70%] pt-10">
                         {orderData.order ? (
                             <>
-                                <TrackInfo events={timeEvents} />
+                                <TrackInfo
+                                    events={timeEvents}
+                                    paths={path}
+                                    timeSuccess={timeSuccess}
+                                />
                             </>
                         ) : (
-                            <div class="p-10">
-                                <TrackInfo events={timeEvents} />
-                            </div>
+                            <div class="p-10">Nothing found</div>
                         )}
                     </div>
                 </div>
@@ -101,26 +116,7 @@ export default function Tracking() {
     );
 }
 
-const destinations = [
-    {
-        name: "Quận Cầu Giấy",
-        type: "Điểm giao dịch",
-    },
-    {
-        name: "Hà Nội",
-        type: "Điểm tập kết",
-    },
-    {
-        name: "Hồ Chí Minh",
-        type: "Điểm tập kết",
-    },
-    {
-        name: "Quận Thủ Đức",
-        type: "Điểm giao dịch",
-    },
-];
-
-function TrackInfo({ events }) {
+function TrackInfo({ events, paths, timeSuccess }) {
     return (
         <div className="container font-quick border-solid border-collapse border border-slate-500 p-4">
             <h1 className="text-4xl font-quick mb-2 font-bold">Order History</h1>
@@ -136,77 +132,109 @@ function TrackInfo({ events }) {
                 <tbody>
                     {events.map((event, index) => (
                         <tr key={index}>
-                            <td>
-                                <i className="fa-solid fa-truck-fast fa-xl p-3"></i>
+                            <td className="text-center">
+                                <i className="fa-solid fa-truck-fast fa-xl p-3"> </i>
                             </td>
                             <td className="font-quick">
-                                {renderContentBasedOnIndex(index, destinations)}
+                                {renderContentBasedOnIndex(index, paths)}
                             </td>
-                            <td className="font-bold font-quick">{events[index]}</td>
+                            <td className="font-bold font-quick text-center">
+                                {events[index].substring(0, 10)}
+                            </td>
                         </tr>
                     ))}
+                    {timeSuccess != undefined && renderTimeSuccess(timeSuccess)}
                 </tbody>
             </table>
         </div>
     );
 }
 
-function renderContentBasedOnIndex(index, destinations) {
+function renderTimeSuccess(timeSuccess) {
+    return (
+        <tr>
+            <td className="text-center">
+                <i className="fa-solid fa-truck-fast fa-xl p-3"></i>
+            </td>
+            <td>
+                <div>Hàng đã được chuyển đến người nhận thành công</div>
+            </td>
+            <td className="font-bold font-quick text-center">{timeSuccess.substring(0, 10)}</td>
+        </tr>
+    );
+}
+
+function renderContentBasedOnIndex(index, path) {
+    if (index > 7 && index % 2 == 0) {
+        return (
+            <div class="font-quick">
+                Giao hàng đến người nhận thất bại và trở về {path.po2.district}
+            </div>
+        );
+    }
+    if (index > 7 && index % 2 == 1) {
+        return (
+            <div class="font-quick">
+                Hàng đã rời khỏi điểm giao dịch {path.po2.district} và đang được chuyển đến người
+                nhận
+            </div>
+        );
+    }
+
     switch (index) {
         case 0:
             return (
                 <div class="font-quick">
-                    Hàng đã được chuyển đến điểm giao dịch {destinations[index / 2].name}
+                    Hàng đã được chuyển đến điểm giao dịch {path.po1.district}
                 </div>
             );
         case 1:
             return (
                 <div class="font-quick">
-                    Hàng đã rời khỏi điểm giao dịch {destinations[(index - 1) / 2].name} và đang
-                    được chuyển đển điểm tập kết {destinations[(index - 1) / 2 + 1].name}
+                    Hàng đã rời khỏi điểm giao dịch {path.po1.district} và đang được chuyển đển điểm
+                    tập kết {path.wh1.province}
                 </div>
             );
         case 2:
             return (
                 <div class="font-quick">
-                    Hàng đã được chuyển đến điểm tập kết {destinations[index / 2].name}
+                    Hàng đã được chuyển đến điểm tập kết {path.wh1.province}
                 </div>
             );
         case 3:
             return (
                 <div class="font-quick">
-                    Hàng đã rời khỏi điểm tập kết {destinations[(index - 1) / 2].name} và đang được
-                    chuyển đển điểm tập kết {destinations[(index - 1) / 2 + 1].name}
+                    Hàng đã rời khỏi điểm tập kết {path.wh1.province} và đang được chuyển đển điểm
+                    tập kết {path.wh2.province}
                 </div>
             );
         case 4:
             return (
                 <div class="font-quick">
-                    Hàng đã được chuyển đến điểm tập kết {destinations[index / 2].name}
+                    Hàng đã được chuyển đến điểm tập kết {path.wh2.province}
                 </div>
             );
         case 5:
             return (
                 <div class="font-quick">
-                    Hàng đã rời khỏi điểm tập kết {destinations[(index - 1) / 2].name} và đang được
-                    chuyển đển điểm giao dịch {destinations[(index - 1) / 2 + 1].name}
+                    Hàng đã rời khỏi điểm tập kết {path.wh2.province} và đang được chuyển đển điểm
+                    giao dịch {path.po2.district}
                 </div>
             );
         case 6:
             return (
                 <div class="font-quick">
-                    Hàng đã được chuyển đến điểm giao dịch {destinations[index / 2].name}
+                    Hàng đã được chuyển đến điểm giao dịch {path.po2.district}
                 </div>
             );
         case 7:
             return (
                 <div class="font-quick">
-                    Hàng đã rời khỏi điểm giao dịch {destinations[(index - 1) / 2].name} và đang
-                    được chuyển đến người nhận
+                    Hàng đã rời khỏi điểm giao dịch {path.po2.district} và đang được chuyển đến
+                    người nhận
                 </div>
             );
-        case 8:
-            return <div class="font-quick">Hàng đã được chuyển đến người nhận.</div>;
+
         default:
             return <div>Default content</div>;
     }

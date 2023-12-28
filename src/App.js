@@ -32,6 +32,8 @@ import Receipant from "./Components/Receipant.js";
 import HomeOfficeStaff from "./pages/OfficeStaff/HomeOfficeStaff.jsx";
 import CreateNewOrder from "./pages/OfficeStaff/CreatNewOrder.js";
 import OrderStatus from "./pages/OfficeStaff/OrderStatus.js";
+import HomeWarehouseStaff from "./pages/WarehouseStaff.js/HomeWarehouseStaff.jsx";
+import WarehouseOrderStatus from "./pages/WarehouseStaff.js/WarehouseOrderStatus.js";
 
 function App() {
     return (
@@ -42,11 +44,11 @@ function App() {
                     <Route path="home" element={<Home />} />
                     <Route path="login" element={<Login />} />
                     <Route path="signup" element={<Signup />} />
-                    <Route path="tracking" element={<Receipant />} />
-                    <Route path="*" element={<Home />} />
+                    <Route path="tracking" element={<Tracking />}></Route>
+                    <Route path="tracking/:id" element={<Tracking />} />
+                    <Route path="bill/:id" element={<Receipant />} />
 
-                    {/** Test */}
-                    <Route path="testBoss" element={<HomeBoss />} />
+                    <Route path="*" element={<Home />} />
 
                     {/**protected routes */}
 
@@ -69,8 +71,11 @@ function App() {
                         </Route>
                     </Route>
 
+                    {/** Warehouse Staff */}
                     <Route element={<WarehouseStaffRoute />}>
-                        <Route path="warehouseStaff" element={<Hello />} />
+                        <Route path="warehouseStaff" element={<HomeWarehouseStaff />}>
+                            <Route path=":id" element={<WarehouseOrderStatus />} />
+                        </Route>
                     </Route>
 
                     {/** Warehouse Manager */}
