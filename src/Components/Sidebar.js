@@ -9,6 +9,13 @@ export default function Sidebar() {
                 data-te-sidenav-init=""
                 data-te-sidenav-hidden="false"
                 data-te-sidenav-accordion="true"
+                style={{
+                    position: "sticky",
+                    zIndex: 1,
+                    top: 100,
+                    left: 0,
+                    scrollBehavior: "smooth",
+                }}
             >
                 <ul
                     className="relative m-0 list-none px-[0.2rem] pb-12"
