@@ -3,9 +3,9 @@ import { Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 function Header() {
     return (
-        <header>
+        <header classname="">
             <nav
-                className="navbar navbar-light navbar-expand-md navbar-fixed-top navigation-clean-button"
+                className="navbar navbar-light navbar-expand-md navbar-fixed-top navigation-clean-button "
                 style={{
                     background: "rgb(34, 34, 34)",
                     borderStyle: "none",

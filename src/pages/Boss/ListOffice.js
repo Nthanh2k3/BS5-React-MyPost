@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import axiosInstance from "../../functions/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import * as officeService from "../../apiService/officeService";
+import * as warehouseService from "../../apiService/warehouseService";
 import { Outlet } from "react-router-dom";
 import {
     Button,
@@ -25,8 +27,6 @@ export default function ListOffice() {
     ]);
     const [isFetch, setIsFetch] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,25 +37,37 @@ export default function ListOffice() {
     const fetchData = async () => {
         try {
             const response = await axiosInstance.get(`postoffice/all`);
+            const postOffices = await officeService.getAllOffice();
             // Handle the response data
+            console.log(`hello ${postOffices}`);
 
             const mapOffices = await Promise.all(
-                response.data.postOffices.map(async (office) => {
-                    const officeResponse = await getOfficeManagerByOfficeId(office.postOfficeID);
-                    const warehouseResponse = await getWarehouseById(office.belongToWarehouseID);
+                postOffices.map(async (office) => {
+                    const officeResponse = await officeService.getOfficeManagerByOfficeId(
+                        office.postOfficeID
+                    );
+                    const warehouseResponse = await warehouseService.getWarehouseById(
+                        office.belongToWarehouseID
+                    );
 
                     return {
                         id: office.postOfficeID,
                         district: office.district,
-                        province: warehouseResponse.data.warehouse.province,
+                        province: warehouseResponse.province,
                         manager: officeResponse.data.postOfficeManager.name,
                     };
                 })
             );
 
-            console.log(response.data);
+            const warehouses = await warehouseService.getAllWarehouse();
+            const mapProvinces = warehouses.map((warehouse) => {
+                return {
+                    province: warehouse.province,
+                    warehouseId: warehouse.warehouseID,
+                };
+            });
+            setProvinces(mapProvinces);
 
-            getAllWarehouse();
             setOffices(mapOffices);
         } catch (error) {
             // Handle errors
@@ -63,75 +75,17 @@ export default function ListOffice() {
         }
     };
 
-    const getOfficeManagerByOfficeId = async (id) => {
-        try {
-            const response = await axiosInstance.get(`postoffice/manager/${id}`);
-            // Return the response for further processing
-            console.log(response);
-            return response;
-        } catch (error) {
-            // Handle errors
-
-            if (
-                error.response.data.message ==
-                "postOfficeManager not found for the specified postOffice"
-            ) {
-                const response1 = {
-                    data: {
-                        postOfficeManager: {
-                            name: "None",
-                        },
-                    },
-                };
-                return response1;
-            }
-            console.error("Error fetching data:", error.response.data.message);
-        }
-    };
-
-    const getWarehouseById = async (id) => {
-        try {
-            const response = await axiosInstance.get(`warehouse/${id}`);
-            // Return the response for further processing
-            console.log(response);
-            return response;
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
-    };
-
-    const getAllWarehouse = async () => {
-        const response = await axiosInstance.get(`warehouse/all`);
-        const mapProvinces = response.data.warehouses.map((warehouse) => {
-            return {
-                province: warehouse.province,
-                warehouseId: warehouse.warehouseID,
-            };
-        });
-        console.log(mapProvinces);
-        setProvinces(mapProvinces);
-    };
-
-    const handleButtonClick = (e, id) => {
+    const handleButtonClick = async (e, id) => {
         e.preventDefault();
         console.log(id);
-        // deleteWarehouse(id);
+        await officeService.deleteOfficeById(id);
+        setIsFetch(!isFetch);
     };
 
     const handleRowClick = (id) => {
         console.log(id);
-        navigate(`/boss/statistic/office/${id}`);
-    };
-
-    const deleteWarehouse = async (id) => {
-        try {
-            const response = await axiosInstance.delete(`warehouse/${id}`);
-            setIsFetch(!isFetch);
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
+        var encodedId = btoa(id);
+        navigate(`/boss/statistic/office/${encodedId}`);
     };
 
     const columns = [
@@ -255,25 +209,8 @@ function DialogWithForm({ provinces }) {
 
     const handleSubmit = () => {
         handleOpen();
-        createNewWarehouse();
-        // window.location.reload(true);
-    };
-
-    const createNewWarehouse = async () => {
-        try {
-            const response = await axiosInstance.request(
-                `postoffice/new/warehouseID=${province.warehouseId}`,
-                {
-                    method: "post",
-                    data: {
-                        district: district,
-                    },
-                }
-            );
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
+        officeService.createNewOffice(district, province);
+        window.location.reload(true);
     };
 
     return (

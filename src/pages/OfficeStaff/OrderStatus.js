@@ -4,7 +4,8 @@ import DataTable from "react-data-table-component";
 import axiosInstance from "../../functions/axiosInstance";
 import * as officeService from "../../apiService/officeService";
 import * as orderService from "../../apiService/orderService";
-import PieChart from "../../Components/PieChart";
+import * as officeStaffService from "../../apiService/officeStaffService";
+import { IconButton } from "@material-tailwind/react";
 import {
     Tabs,
     TabsHeader,
@@ -17,7 +18,7 @@ import {
     Select,
     Option,
 } from "@material-tailwind/react";
-export default function StatisticOffice() {
+export default function OrderStatus() {
     const params = useParams();
     const postOfficeId = atob(params.id);
     const [status, setStatus] = useState("All");
@@ -26,6 +27,23 @@ export default function StatisticOffice() {
     const [totalSendToSenderWH, setTotalSendToSenderWH] = useState("");
     const [totalSendToShip, setTotalSendToShip] = useState("");
     const [totalShipSuccess, setTotalShipSuccess] = useState("");
+    const [comingOrder, setComingOrder] = useState([
+        {
+            id: "",
+            sender: "",
+            recipent: "",
+            status: "",
+        },
+    ]);
+
+    const [insideToWHOrder, setInsideToWHOrder] = useState([
+        {
+            id: "",
+            sender: "",
+            recipent: "",
+            status: "",
+        },
+    ]);
 
     const [orders, setOrders] = useState([
         {
@@ -49,13 +67,28 @@ export default function StatisticOffice() {
         },
         {
             name: "Recipent",
-            selector: (row) => row.recipent,
+            selector: (row) => row.recipient,
             sortable: true,
         },
         {
             name: "Status",
             selector: (row) => row.status,
             sortable: true,
+        },
+        {
+            name: "Confirm",
+            button: true,
+            width: "15%",
+            cell: (row) => (
+                <IconButton
+                    variant="text"
+                    size="lg"
+                    color="green"
+                    onClick={(e) => handleConfirmComingOrder(row.id, row.status)}
+                >
+                    <i className="fa-solid fa-circle-check fa-xl"></i>
+                </IconButton>
+            ),
         },
     ];
 
@@ -85,9 +118,41 @@ export default function StatisticOffice() {
         },
     };
 
+    const handleConfirmComingOrder = async (orderId, orderStatus) => {
+        switch (orderStatus) {
+            case "Inside To Warehouse":
+                const response = officeStaffService.updateFinalWarehouseToOffice(orderId);
+                break;
+        }
+        // const response = officeStaffService.updateFinalWarehouseToOffice(orderId);
+    };
     const fetchData = async () => {
         try {
             const orders = await orderService.getOrdersByOffice(postOfficeId);
+
+            const comingOrder = await officeStaffService.getAllComingOrder(postOfficeId);
+            console.log(comingOrder);
+            const mapComingOrder = comingOrder.map((order) => {
+                return {
+                    id: order.orderID,
+                    sender: order.senderName,
+                    recipent: order.recipientName,
+                    status: "Incoming",
+                };
+            });
+            setComingOrder(mapComingOrder);
+
+            const mapOrdersInsideToWarehouse = orders.inside
+                .filter((order) => order.processTime.length == 1)
+                .map((order) => ({
+                    id: order.orderID,
+                    sender: order.senderName,
+                    recipient: order.recipientName,
+                    status: "Inside To Warehouse",
+                }));
+            console.log(mapOrdersInsideToWarehouse);
+
+            setInsideToWHOrder(mapOrdersInsideToWarehouse);
 
             const mapOrdersInside = orders.inside.map((order) => {
                 return {
@@ -151,104 +216,27 @@ export default function StatisticOffice() {
     return (
         <div className="tableContainer w-[90%] mx-auto mt-3 ">
             <h1 className="font-bold font-quick pb-3 pt-3 text-center">Orders in {district} </h1>
-
-            {/* <h1 className="font-bold font-quick pb-3 pt-3 text-left pl-7">
-                Hàng đã được gửi đi: {totalSendedOrder}
-            </h1> */}
-            {/* <div className="w-[80%] mx-auto p-4 h-auto">
-                <PieChart series={[totalInsideOrder, orders.size]} />
-            </div> */}
-            <Tabs value="Statistic">
+            <Tabs value="Inside">
                 <TabsHeader>
-                    <Tab key="Statistic" value="Statistic">
-                        <i class="fa-solid fa-table h-full pr-2"></i>
-                        Statistic
+                    <Tab key="Coming" value="Coming">
+                        <i className="fa-solid fa-right-to-bracket h-full pr-2"></i>
+                        Order Incoming
                     </Tab>
-                    <Tab key="Chart" value="Chart">
+                    <Tab key="Customer" value="Customer">
                         <i className="fa-solid fa-chart-simple h-full pr-2"></i>
-                        Chart
+                        Order Inside to Customer
+                    </Tab>
+                    <Tab key="Warehouse" value="Warehouse">
+                        <i className="fa-solid fa-chart-simple h-full pr-2"></i>
+                        Order Inside to Warehouse
+                    </Tab>
+                    <Tab key="Shipping" value="Shipping">
+                        <i className="fa-solid fa-arrow-right-from-bracket h-full pr-2"></i>
+                        Order Shipping
                     </Tab>
                 </TabsHeader>
                 <TabsBody>
-                    <TabPanel key="Statistic" value="Statistic">
-                        <div className="flex flex-row mb-4">
-                            <Card
-                                className="w-70 mr-8 h-max"
-                                color="orange"
-                                shadow="true"
-                                variant="gradient"
-                            >
-                                <CardBody>
-                                    <Typography
-                                        variant="h5"
-                                        color="blue-gray"
-                                        className="mb-2 uppercase"
-                                    >
-                                        Total Inside Orders
-                                    </Typography>
-                                    <Typography variant="h2" color="blue-gray" className="mb-2">
-                                        {totalInsideOrder}
-                                    </Typography>
-                                </CardBody>
-                            </Card>
-                            <Card
-                                className="w-70 mr-8 h-max"
-                                color="teal"
-                                shadow="true"
-                                variant="gradient"
-                            >
-                                <CardBody>
-                                    <Typography
-                                        variant="h5"
-                                        color="blue-gray"
-                                        className="mb-2 uppercase"
-                                    >
-                                        Total Orders sended to Warehouse
-                                    </Typography>
-                                    <Typography variant="h2" color="blue-gray" className="mb-2">
-                                        {totalSendToSenderWH}
-                                    </Typography>
-                                </CardBody>
-                            </Card>
-                            <Card
-                                className="w-70 mr-8 h-max"
-                                color="pink"
-                                shadow="true"
-                                variant="gradient"
-                            >
-                                <CardBody>
-                                    <Typography
-                                        variant="h5"
-                                        color="blue-gray"
-                                        className="mb-2 uppercase"
-                                    >
-                                        Total Orders sended to ship
-                                    </Typography>
-                                    <Typography variant="h2" color="blue-gray" className="mb-2">
-                                        {totalSendToShip}
-                                    </Typography>
-                                </CardBody>
-                            </Card>
-                            <Card
-                                className="w-70 mr-8 h-max"
-                                color="cyan"
-                                shadow="true"
-                                variant="gradient"
-                            >
-                                <CardBody>
-                                    <Typography
-                                        variant="h5"
-                                        color="blue-gray"
-                                        className="mb-2 uppercase"
-                                    >
-                                        Total Orders shipped success
-                                    </Typography>
-                                    <Typography variant="h2" color="blue-gray" className="mb-2">
-                                        {totalShipSuccess}
-                                    </Typography>
-                                </CardBody>
-                            </Card>
-                        </div>
+                    <TabPanel key="Coming" value="Coming">
                         <div className="mx-2 mb-2 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
                             <div className="w-[10%] mx-2 pt-4">
                                 <Select
@@ -266,7 +254,34 @@ export default function StatisticOffice() {
                             <DataTable
                                 className="p-4"
                                 columns={columns}
-                                data={filteredOrders}
+                                data={comingOrder}
+                                selectableRows
+                                pagination
+                                customStyles={customStyles}
+                                highlightOnHover
+                                pointerOnHover
+                            />
+                        </div>
+                    </TabPanel>
+                    <TabPanel key="Warehouse" value="Warehouse">
+                        <div className="mx-2 mb-2 z-[1035] bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)]">
+                            <div className="w-[10%] mx-2 pt-4">
+                                <Select
+                                    label="Choose Status"
+                                    color="indigo"
+                                    size="lg"
+                                    onChange={(value) => setStatus(value)}
+                                >
+                                    <Option value="All">All</Option>
+                                    <Option value="sendToSenderWH">Send To Sender WH</Option>
+                                    <Option value="sendToShip">sendToShip</Option>
+                                    <Option value="shipSuccess">Ship Success</Option>
+                                </Select>
+                            </div>
+                            <DataTable
+                                className="p-4"
+                                columns={columns}
+                                data={insideToWHOrder}
                                 selectableRows
                                 pagination
                                 customStyles={customStyles}

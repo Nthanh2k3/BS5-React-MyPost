@@ -28,6 +28,10 @@ import HomeOfficeManager from "./pages/OfficeManager/HomeOfficeManager.jsx";
 import ListOfficeStaff from "./pages/OfficeManager/ListOfficeStaff.js";
 import HomeWarehouseManager from "./pages/WarehouseManager/HomeWarehouseManager.jsx";
 import ListWarehouseStaff from "./pages/WarehouseManager/ListWarehouseStaff.js";
+import Receipant from "./Components/Receipant.js";
+import HomeOfficeStaff from "./pages/OfficeStaff/HomeOfficeStaff.jsx";
+import CreateNewOrder from "./pages/OfficeStaff/CreatNewOrder.js";
+import OrderStatus from "./pages/OfficeStaff/OrderStatus.js";
 
 function App() {
     return (
@@ -38,7 +42,7 @@ function App() {
                     <Route path="home" element={<Home />} />
                     <Route path="login" element={<Login />} />
                     <Route path="signup" element={<Signup />} />
-                    <Route path="tracking" element={<Tracking />} />
+                    <Route path="tracking" element={<Receipant />} />
                     <Route path="*" element={<Home />} />
 
                     {/** Test */}
@@ -77,8 +81,12 @@ function App() {
                         </Route>
                     </Route>
 
+                    {/** Office Staff */}
                     <Route element={<OfficeStaffRoute />}>
-                        <Route path="officeStaff" element={<div>officeStaff</div>} />
+                        <Route path="officeStaff" element={<HomeOfficeStaff />}>
+                            <Route path="createOrder" element={<CreateNewOrder />}></Route>
+                            <Route path=":id" element={<OrderStatus />} />
+                        </Route>
                     </Route>
 
                     {/** Office Manager */}

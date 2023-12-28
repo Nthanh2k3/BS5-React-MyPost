@@ -3,7 +3,7 @@ import DataTable from "react-data-table-component";
 import axiosInstance from "../../functions/axiosInstance";
 import MyDatePicker from "../../Components/MyDatePicker";
 import Cookies from "js-cookie";
-
+import * as userService from "../../apiService/userService";
 import {
     Button,
     Dialog,
@@ -18,91 +18,55 @@ import {
 
 export default function ListOfficeStaff() {
     const [isFetch, setIsFetch] = useState(false);
-    const [officeManager, setOfficeManager] = useState([]);
+    const [officeStaff, setofficeStaff] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [district, setDistrict] = useState("");
     const [postOfficeId, setPostOfficeId] = useState("");
 
-    const [provinces, setProvinces] = useState([
-        {
-            postOfficeID: "",
-            district: "",
-            belongToWarehouseID: "",
-        },
-    ]);
-
-    const getRole = async () => {
-        try {
-            const response = await axiosInstance.get(`user/role`, {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get("jwt")}`,
-                },
-            });
-            setPostOfficeId(response.data.postOfficeID);
-            console.log(postOfficeId);
-            await fetchData();
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching role:", error);
-        }
-    };
-
     useEffect(() => {
         // Gọi API và cập nhật state khi component được render
-        getRole();
+        fetchData();
     }, [isFetch]); // Mảng dependencies trống rỗng, chỉ gọi một lần sau khi component được render đầu tiên
 
     const fetchData = async () => {
         try {
-            const roleResponse = await axiosInstance.get(`user/role`, {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get("jwt")}`,
-                },
-            });
-            setPostOfficeId(roleResponse.data.postOfficeID);
+            const roleResponse = await userService.getRole();
+            setPostOfficeId(roleResponse.postOfficeID);
 
             const response = await axiosInstance.get(
-                `user/officeStaff/${roleResponse.data.postOfficeID}`
+                `user/officeStaff/${roleResponse.postOfficeID}`
             );
 
             const responseDistrict = await axiosInstance.get(
-                `postoffice/${roleResponse.data.postOfficeID}`
+                `postoffice/${roleResponse.postOfficeID}`
             );
             setDistrict(responseDistrict.data.postOffice.district);
 
             // Use Promise.all to wait for all async calls to getOfficeById
             const mapWarehouses = await Promise.all(
-                response.data.officeStaffs.map(async (officeManager) => {
+                response.data.officeStaffs.map((officeStaff) => {
                     return {
-                        id: officeManager.userID,
-                        name: officeManager.name,
-                        email: officeManager.email,
+                        id: officeStaff.userID,
+                        name: officeStaff.name,
+                        email: officeStaff.email,
                         district: district,
-                        birthdate: officeManager.birthdate.substring(0, 10),
+                        birthdate: officeStaff.birthdate.substring(0, 10),
                     };
                 })
             );
-            setOfficeManager(mapWarehouses);
+            setofficeStaff(mapWarehouses);
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
         }
     };
 
-    const handleButtonClick = (e, id) => {
+    const handleButtonClick = async (e, id) => {
         e.preventDefault();
-        deleteWarehouse(id);
+        await userService.deleteUserById(id);
+        setIsFetch(!isFetch);
     };
 
-    const deleteWarehouse = async (id) => {
-        try {
-            const response = await axiosInstance.delete(`warehouse/${id}`);
-            setIsFetch(!isFetch);
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
-    };
     const columns = [
         {
             name: "ID",
@@ -175,10 +139,10 @@ export default function ListOfficeStaff() {
         },
     };
 
-    const filteredOfficeManager = officeManager.filter(
-        (officeManager) =>
-            officeManager.district.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            officeManager.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredofficeStaff = officeStaff.filter(
+        (officeStaff) =>
+            officeStaff.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            officeStaff.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -201,7 +165,7 @@ export default function ListOfficeStaff() {
             <DataTable
                 className="px-2"
                 columns={columns}
-                data={filteredOfficeManager}
+                data={filteredofficeStaff}
                 selectableRows
                 pagination
                 customStyles={customStyles}
@@ -214,8 +178,6 @@ export default function ListOfficeStaff() {
 
 function DialogWithForm({ district, postOfficeId }) {
     const [open, setOpen] = React.useState(false);
-    const [managers, setManagers] = useState(["Nam", "Quang", "Thành"]);
-    const [province, setProvince] = useState("");
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -243,21 +205,9 @@ function DialogWithForm({ district, postOfficeId }) {
 
         // Perform any necessary actions with the payload (e.g., send it to the server)
         console.log("Submit payload:", payload);
-        createNewOfficeStaff(payload);
+        userService.createNewAccount(payload);
         handleOpen();
-        // window.location.reload(true);
-    };
-
-    const createNewOfficeStaff = async (payload) => {
-        try {
-            const response = await axiosInstance.request(`user/register`, {
-                method: "post",
-                data: payload,
-            });
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
+        window.location.reload(true);
     };
 
     return (

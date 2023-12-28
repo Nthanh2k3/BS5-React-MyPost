@@ -3,6 +3,7 @@ import DataTable from "react-data-table-component";
 import axiosInstance from "../../functions/axiosInstance";
 import MyDatePicker from "../../Components/MyDatePicker";
 import Cookies from "js-cookie";
+import * as userService from "../../apiService/userService";
 
 import {
     Button,
@@ -18,18 +19,10 @@ import {
 
 export default function ListWarehouseStaff() {
     const [isFetch, setIsFetch] = useState(false);
-    const [officeManager, setOfficeManager] = useState([]);
+    const [WarehouseStaff, setWarehouseStaff] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [district, setDistrict] = useState("");
     const [postOfficeId, setPostOfficeId] = useState("");
-
-    const [provinces, setProvinces] = useState([
-        {
-            postOfficeID: "",
-            district: "",
-            belongToWarehouseID: "",
-        },
-    ]);
 
     useEffect(() => {
         // Gọi API và cập nhật state khi component được render
@@ -38,55 +31,44 @@ export default function ListWarehouseStaff() {
 
     const fetchData = async () => {
         try {
-            const roleResponse = await axiosInstance.get(`user/role`, {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get("jwt")}`,
-                },
-            });
-            setPostOfficeId(roleResponse.data.warehouseID);
+            const roleResponse = await userService.getRole();
+
+            setPostOfficeId(roleResponse.warehouseID);
 
             const response = await axiosInstance.get(
-                `user/warehouseStaff/${roleResponse.data.warehouseID}`
+                `user/warehouseStaff/${roleResponse.warehouseID}`
             );
 
             const responseDistrict = await axiosInstance.get(
-                `warehouse/${roleResponse.data.warehouseID}`
+                `warehouse/${roleResponse.warehouseID}`
             );
             setDistrict(responseDistrict.data.warehouse.province);
 
             // Use Promise.all to wait for all async calls to getOfficeById
             const mapWarehouses = await Promise.all(
-                response.data.warehouseStaffs.map(async (officeManager) => {
+                response.data.warehouseStaffs.map(async (WarehouseStaff) => {
                     return {
-                        id: officeManager.userID,
-                        name: officeManager.name,
-                        email: officeManager.email,
+                        id: WarehouseStaff.userID,
+                        name: WarehouseStaff.name,
+                        email: WarehouseStaff.email,
                         district: district,
-                        birthdate: officeManager.birthdate.substring(0, 10),
+                        birthdate: WarehouseStaff.birthdate.substring(0, 10),
                     };
                 })
             );
-            setOfficeManager(mapWarehouses);
+            setWarehouseStaff(mapWarehouses);
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
         }
     };
 
-    const handleButtonClick = (e, id) => {
+    const handleButtonClick = async (e, id) => {
         e.preventDefault();
-        deleteWarehouse(id);
+        await userService.deleteUserById(id);
+        setIsFetch(!isFetch);
     };
 
-    const deleteWarehouse = async (id) => {
-        try {
-            const response = await axiosInstance.delete(`warehouse/${id}`);
-            setIsFetch(!isFetch);
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
-    };
     const columns = [
         {
             name: "ID",
@@ -159,10 +141,10 @@ export default function ListWarehouseStaff() {
         },
     };
 
-    const filteredOfficeManager = officeManager.filter(
-        (officeManager) =>
-            officeManager.district.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            officeManager.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredWarehouseStaff = WarehouseStaff.filter(
+        (WarehouseStaff) =>
+            WarehouseStaff.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            WarehouseStaff.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -185,7 +167,7 @@ export default function ListWarehouseStaff() {
             <DataTable
                 className="px-2"
                 columns={columns}
-                data={filteredOfficeManager}
+                data={filteredWarehouseStaff}
                 selectableRows
                 pagination
                 customStyles={customStyles}
@@ -227,21 +209,9 @@ function DialogWithForm({ district, postOfficeId }) {
 
         // Perform any necessary actions with the payload (e.g., send it to the server)
         console.log("Submit payload:", payload);
-        createNewOfficeStaff(payload);
+        userService.createNewAccount(payload);
         handleOpen();
-        // window.location.reload(true);
-    };
-
-    const createNewOfficeStaff = async (payload) => {
-        try {
-            const response = await axiosInstance.request(`user/register`, {
-                method: "post",
-                data: payload,
-            });
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
+        window.location.reload(true);
     };
 
     return (

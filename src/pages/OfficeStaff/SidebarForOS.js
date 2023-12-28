@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-export default function SidebarForOM({ postOfficeId }) {
+export default function SidebarForOS({ postOfficeId }) {
     console.log(`chiue hom ay ${postOfficeId}`);
     var encodedId = btoa(postOfficeId);
     return (
@@ -17,7 +17,20 @@ export default function SidebarForOM({ postOfficeId }) {
                     className="relative m-0 list-none px-[0.2rem] pb-12"
                     data-te-sidenav-menu-ref=""
                 >
-                    <li className="relative"></li>
+                    <li className="relative pt-4">
+                        <span className="px-6 py-4 text-base font-bold uppercase text-black font-quick">
+                            Create
+                        </span>
+                        <Link
+                            className="flex cursor-pointer items-center truncate rounded-[5px] px-6 py-[0.45rem] text-[0.85rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-slate-50 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10 no-underline"
+                            to="createOrder"
+                        >
+                            <span className="ml-2 mr-4 [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-gray-400 dark:[&>svg]:text-gray-300">
+                                <i class="fa-solid fa-plus h-5 w-5"></i>
+                                <span className="text-sm font-quick mr-10">New Order</span>
+                            </span>
+                        </Link>
+                    </li>
 
                     <li className="relative pt-4">
                         <span className="px-6 py-4 text-base font-bold uppercase text-black font-quick">
@@ -40,7 +53,7 @@ export default function SidebarForOM({ postOfficeId }) {
 
                         <Link
                             className="flex cursor-pointer items-center truncate rounded-[5px] px-6 py-[0.45rem] text-[0.85rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-slate-50 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10 no-underline"
-                            to={`/officeManager/${encodedId}`}
+                            to={`/officeStaff/${encodedId}`}
                         >
                             <span className="ml-2 mr-4 [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-gray-400 dark:[&>svg]:text-gray-300">
                                 <i class="fa-solid fa-building h-5 w-5"></i>
