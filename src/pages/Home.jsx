@@ -16,15 +16,25 @@ class Home extends React.Component {
   <Header/>
   </div>
   {/*QuickTrackSection*/}
+  <div id="trackingBox">
   <TrackingBox/>
+  </div>
   {/*ServiceSection*/}
+  <div id="serviceSection">
   <Service/>
+  </div>
   {/*PricingSection*/}
+  <div id="pricingSection">
   <Pricing/>
+  </div>
   {/*AboutSection*/}
+  <div id="aboutUsSection">
   <AboutUs/>
+  </div>
   {/*ContactSection*/}
+  <div id= "contactSection">
   <Contact/>
+  </div>
   {/*FooterSection*/}
   <Footer/>
 

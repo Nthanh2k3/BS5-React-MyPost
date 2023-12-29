@@ -1,7 +1,16 @@
 import React from "react";
 import { Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
-function Header() {
+function Header()  {
+        const handleNavItemClick = (sectionId) => {
+            const targetSection = document.getElementById(sectionId);
+        
+            if (targetSection) {
+              targetSection.scrollIntoView({
+                behavior: 'smooth',
+              });
+            }
+    };
     return (
         <header classname="">
             <nav
@@ -37,6 +46,7 @@ function Header() {
                                     className="nav-link active"
                                     href="/home"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
+                                    
                                 >
                                     Home
                                 </a>
@@ -44,8 +54,9 @@ function Header() {
                             <li className="nav-item">
                                 <a
                                     className="nav-link"
-                                    href="about.html"
+                                    href="#AboutSection"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
+                                    onClick={() => handleNavItemClick('aboutUsSection')}
                                 >
                                     About
                                 </a>
@@ -53,8 +64,9 @@ function Header() {
                             <li className="nav-item">
                                 <a
                                     className="nav-link"
-                                    href="faq.html"
+                                    href="#ServiceSection"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
+                                    onClick={() => handleNavItemClick('serviceSection')}
                                 >
                                     Service
                                 </a>
@@ -71,8 +83,9 @@ function Header() {
                             <li className="nav-item">
                                 <a
                                     className="nav-link"
-                                    href="contact.html"
+                                    href="#PricingSection"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
+                                    onClick={() => handleNavItemClick('pricingSection')}
                                 >
                                     Pricing
                                 </a>
@@ -80,8 +93,10 @@ function Header() {
                             <li className="nav-item">
                                 <a
                                     className="nav-link active"
-                                    href="/index.html"
+                                    href="#ContactSection"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
+                                    onClick={() => handleNavItemClick('contactSection')}
+                                    
                                 >
                                     Contact&nbsp;
                                 </a>

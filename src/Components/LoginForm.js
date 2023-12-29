@@ -49,6 +49,7 @@ function LoginForm() {
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
+
         }
     };
 
@@ -70,11 +71,11 @@ function LoginForm() {
                 </div>
                 <div className="email-login" style={{ backgroundColor: "/#ffffff" }}>
                     <input
-                        type="email"
-                        className="email-imput form-control"
-                        style={{ marginTop: 10 }}
+                        type="username"
+                        className="username-input form-control"
+                        style={{ marginTop: 10 , height: 50 }}
                         required=""
-                        placeholder="Email"
+                        placeholder="Username"
                         minLength={6}
                         onChange={(e) => setInfo({ ...info, username: e.target.value })}
                     />
