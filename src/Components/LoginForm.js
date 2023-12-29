@@ -4,6 +4,8 @@ import axiosInstance from "../functions/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import "react-toastify/dist/ReactToastify.css";
 
 function LoginForm() {
     const [info, setInfo] = useState({
@@ -49,13 +51,16 @@ function LoginForm() {
         } catch (error) {
             // Handle errors
             console.error("Error fetching data:", error);
-
+            toast.error("Invalid Username or Password ");
         }
     };
 
     return (
         <div>
             <div className="d-flex flex-column justify-content-center" id="login-box">
+                <div>
+                    <Toaster position="top-right" />
+                </div>
                 <div className="login-box-header">
                     <h4
                         style={{
@@ -73,7 +78,7 @@ function LoginForm() {
                     <input
                         type="username"
                         className="username-input form-control"
-                        style={{ marginTop: 10 , height: 50 }}
+                        style={{ marginTop: 10, height: 50 }}
                         required=""
                         placeholder="Username"
                         minLength={6}
@@ -116,17 +121,6 @@ function LoginForm() {
                             Forgot Password?
                         </a>
                     </div>
-                </div>
-                <div
-                    id="login-box-footer"
-                    style={{ padding: "10px 20px", paddingBottom: 23, paddingTop: 18 }}
-                >
-                    <p style={{ marginBottom: 0 }}>
-                        Don't you have an account?
-                        <Link class="ml-2" to={"/signup"}>
-                            Sign Up
-                        </Link>
-                    </p>
                 </div>
             </div>
         </div>
