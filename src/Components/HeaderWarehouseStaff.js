@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router";
 
-export default function HeaderOfficeStaff() {
+export default function HeaderWarehouseStaff() {
     const navigate = useNavigate();
     const handleSignOut = () => {
         Cookies.remove("jwt");
@@ -24,7 +24,7 @@ export default function HeaderOfficeStaff() {
                     paddingBottom: 10,
                 }}
             >
-                <Link className="navbar-brand p-50" to="/officeStaff">
+                <Link className="navbar-brand p-50" to="/warehouseStaff">
                     <span
                         style={{
                             fontFamily: "Cookie, serif",

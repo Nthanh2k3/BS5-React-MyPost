@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import * as warehouseService from "../../apiService/warehouseService";
 import * as officeStaffService from "../../apiService/officeStaffService";
 import * as userService from "../../apiService/userService";
+import * as officeService from "../../apiService/officeService";
 
+import { useParams } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import "react-toastify/dist/ReactToastify.css";
 import {
     Button,
     Dialog,
@@ -15,6 +19,8 @@ import {
     Option,
 } from "@material-tailwind/react";
 export default function CreateNewOrder() {
+    const params = useParams();
+    const senderPostOfficeId = atob(params.id);
     const [senderName, setSenderName] = useState("");
     const [senderPhone, setSenderPhone] = useState("");
     const [senderAddress, setSenderAddress] = useState("");
@@ -30,6 +36,7 @@ export default function CreateNewOrder() {
     const [officeList, setOfficeList] = useState([]);
     const [recipientofficeList, setRecipientOfficeList] = useState([]);
     const [office, setOffice] = useState({});
+    const [warehouse, setWarehouse] = useState({});
     const [recipientoffice, setRecipientOffice] = useState({});
     const [deliveryEmployeeId, setDeliveryEmployeeId] = useState("");
 
@@ -57,6 +64,8 @@ export default function CreateNewOrder() {
     const handleSubmit = async () => {
         console.log(payload);
         await officeStaffService.createNewOrder(payload);
+        showToastMessage();
+        handleReset();
     };
 
     const handleReset = () => {
@@ -86,9 +95,20 @@ export default function CreateNewOrder() {
     const fetchData = async () => {
         const warehouses = await warehouseService.getAllWarehouse();
         const currentUser = await userService.getRole();
-        console.log(currentUser.user.userID);
+        console.log(currentUser.user);
         setDeliveryEmployeeId(currentUser.user.userID);
         setWarehouseList(warehouses);
+
+        const postOffice = await officeService.getOfficeById(senderPostOfficeId);
+        console.log(`hello ${postOffice.district}`);
+        setOffice(postOffice);
+
+        const warehouse = await warehouseService.getWarehouseById(postOffice.belongToWarehouseID);
+        setWarehouse(warehouse);
+    };
+
+    const showToastMessage = () => {
+        toast.success("Create Order successfully ");
     };
 
     useEffect(() => {
@@ -97,6 +117,25 @@ export default function CreateNewOrder() {
 
     return (
         <Card className="mx-auto w-[90%] my-4 overflow-y-auto">
+            <div>
+                <Toaster
+                    position="top-right"
+                    toastOptions={{
+                        success: {
+                            style: {
+                                background: "green",
+                                color: "#FFFFFF",
+                                border: "1px solid black",
+                            },
+                        },
+                        error: {
+                            style: {
+                                background: "red",
+                            },
+                        },
+                    }}
+                />
+            </div>
             <CardBody className="flex flex-col gap-3 h-max ">
                 <Typography variant="h4" color="blue-gray" className="font-bold uppercase">
                     Create New Order
@@ -141,7 +180,7 @@ export default function CreateNewOrder() {
                             Choose Sender Office
                         </Typography>
                         <div className="grid grid-cols-2 gap-4">
-                            <Select
+                            {/* <Select
                                 label="Select Warehouse"
                                 color="indigo"
                                 size="lg"
@@ -152,11 +191,27 @@ export default function CreateNewOrder() {
                                         {warehouse.province}
                                     </Option>
                                 ))}
-                            </Select>
-                            <Select
+                            </Select> */}
+                            <Input
+                                size="lg"
+                                color="indigo"
+                                typeof="mail"
+                                value={warehouse.province}
+                                disabled
+                            />
+                            <Input
+                                size="lg"
+                                color="indigo"
+                                typeof="mail"
+                                value={office.district}
+                                disabled
+                            />
+                            {/* <Select
                                 label="Select Office"
                                 color="indigo"
                                 size="lg"
+                                value={office.district}
+                                disabled
                                 onChange={(e) => {
                                     setOffice(e);
                                 }}
@@ -166,7 +221,7 @@ export default function CreateNewOrder() {
                                         {office.district}
                                     </Option>
                                 ))}
-                            </Select>
+                            </Select> */}
                         </div>
 
                         <Typography className="mb-2" variant="h6">

@@ -1,15 +1,15 @@
 import React from "react";
 import { Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
-function Header()  {
-        const handleNavItemClick = (sectionId) => {
-            const targetSection = document.getElementById(sectionId);
-        
-            if (targetSection) {
-              targetSection.scrollIntoView({
-                behavior: 'smooth',
-              });
-            }
+function Header() {
+    const handleNavItemClick = (sectionId) => {
+        const targetSection = document.getElementById(sectionId);
+
+        if (targetSection) {
+            targetSection.scrollIntoView({
+                behavior: "smooth",
+            });
+        }
     };
     return (
         <header classname="">
@@ -42,21 +42,20 @@ function Header()  {
                     <div>
                         <ul className="navbar-nav nav-right">
                             <li className="nav-item">
-                                <a
+                                <Link
                                     className="nav-link active"
-                                    href="/home"
+                                    to="/home"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
-                                    
                                 >
                                     Home
-                                </a>
+                                </Link>
                             </li>
                             <li className="nav-item">
                                 <a
                                     className="nav-link"
                                     href="#AboutSection"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
-                                    onClick={() => handleNavItemClick('aboutUsSection')}
+                                    onClick={() => handleNavItemClick("aboutUsSection")}
                                 >
                                     About
                                 </a>
@@ -66,7 +65,7 @@ function Header()  {
                                     className="nav-link"
                                     href="#ServiceSection"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
-                                    onClick={() => handleNavItemClick('serviceSection')}
+                                    onClick={() => handleNavItemClick("serviceSection")}
                                 >
                                     Service
                                 </a>
@@ -85,7 +84,7 @@ function Header()  {
                                     className="nav-link"
                                     href="#PricingSection"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
-                                    onClick={() => handleNavItemClick('pricingSection')}
+                                    onClick={() => handleNavItemClick("pricingSection")}
                                 >
                                     Pricing
                                 </a>
@@ -95,8 +94,7 @@ function Header()  {
                                     className="nav-link active"
                                     href="#ContactSection"
                                     style={{ color: "rgba(224,217,217,0.9)" }}
-                                    onClick={() => handleNavItemClick('contactSection')}
-                                    
+                                    onClick={() => handleNavItemClick("contactSection")}
                                 >
                                     Contact&nbsp;
                                 </a>

@@ -110,6 +110,7 @@ export default function ListOfficeManager() {
             width: "15%",
             cell: (row) => (
                 <div className="flex flex-row">
+                    <UpdateUser userId={row.id} />
                     <button
                         className="btn btn-outline btn-xs ml-2"
                         onClick={(e) => handleButtonClick(e, row.id)}
@@ -202,7 +203,7 @@ function DialogWithForm({ provinces }) {
         setBirthdate(date);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const payload = {
             username,
             password,
@@ -215,7 +216,7 @@ function DialogWithForm({ provinces }) {
 
         // Perform any necessary actions with the payload (e.g., send it to the server)
         console.log("Submit payload:", payload);
-        createNewOfficeManager(payload);
+        await createNewOfficeManager(payload);
         handleOpen();
         window.location.reload(true);
     };
@@ -363,6 +364,11 @@ function UpdateUser({ provinces, userId }) {
     const [newBirthdate, setNewBirthdate] = useState(null);
 
     const handleOpen = async () => {
+        setNewUsername("");
+        setNewPassword("");
+        setNewName("");
+        setNewBirthdate(null);
+        setNewEmail("");
         const response = await userService.getUserById(userId);
         setName(response.name);
         setUsername(response.username);
@@ -384,41 +390,29 @@ function UpdateUser({ provinces, userId }) {
 
         if (newUsername != "") {
             payload.username = newUsername;
-        }
+        } else payload.username = username;
 
         if (newPassword != "") {
             payload.password = newPassword;
-        }
+        } else payload.password = password;
 
         if (newName != "") {
             payload.name = newName;
-        }
+        } else payload.name = name;
 
         if (newEmail != "") {
             payload.email = newEmail;
-        }
+        } else payload.email = email;
 
         if (newBirthdate != null) {
             payload.birthdate = newBirthdate.toLocaleDateString("en-CA");
-        }
+        } else payload.birthdate = birthdate;
 
         // Perform any necessary actions with the payload (e.g., send it to the server)
         console.log("Submit payload:", payload);
-        // await userService.updateAccount(userId, payload);
+        await userService.updateAccount(userId, payload);
         handleOpen();
-        // window.location.reload(true);
-    };
-
-    const createNewOfficeManager = async (payload) => {
-        try {
-            const response = await axiosInstance.request(`user/register`, {
-                method: "post",
-                data: payload,
-            });
-        } catch (error) {
-            // Handle errors
-            console.error("Error fetching data:", error);
-        }
+        window.location.reload(true);
     };
 
     return (
@@ -513,7 +507,7 @@ function UpdateUser({ provinces, userId }) {
                                     labelProps={{
                                         className: "before:content-none after:content-none",
                                     }}
-                                    value={password}
+                                    value="*********"
                                     disabled
                                 />
                                 <Typography className="mb-1 mt-3" variant="h6">

@@ -104,6 +104,7 @@ export default function TrackingWithID() {
                                     events={timeEvents}
                                     paths={path}
                                     timeSuccess={timeSuccess}
+                                    orderId={orderId}
                                 />
                             </>
                         ) : (
@@ -117,10 +118,10 @@ export default function TrackingWithID() {
     );
 }
 
-function TrackInfo({ events, paths, timeSuccess }) {
+function TrackInfo({ events, paths, timeSuccess, orderId }) {
     return (
         <div className="container font-quick border-solid border-collapse border border-slate-500 p-4">
-            <h1 className="text-4xl font-quick mb-2 font-bold">Order History</h1>
+            <h1 className="text-4xl font-quick mb-2 font-bold">Order {orderId} History</h1>
             <hr className="my-8 bg-gray-200 border-b-4 w-full" />
             <table className="table-auto w-full text-sm text-left font-quick">
                 <thead className="font-quick">

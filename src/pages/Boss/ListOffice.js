@@ -211,9 +211,9 @@ function DialogWithForm({ provinces }) {
         setState(event.target.value);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         handleOpen();
-        officeService.createNewOffice(district, province, address);
+        await officeService.createNewOffice(district, province, address);
         window.location.reload(true);
     };
 

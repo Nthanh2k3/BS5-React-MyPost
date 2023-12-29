@@ -30,7 +30,7 @@ function HomeWarehouseManager() {
 
     return (
         <div className="">
-            <HeaderBoss/>
+            <HeaderWarehouseManager/>
             <div className="flex h-full">
                 <div className="w-60">
                     <SidebarForWM warehouseId={warehouseId}/>
