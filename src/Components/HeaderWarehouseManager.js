@@ -23,7 +23,7 @@ function HeaderWarehouseManager() {
                     paddingBottom: 10,
                 }}
             >
-                <a className="navbar-brand p-50" href="/home">
+                <Link className="navbar-brand p-50" to="/warehouseManager">
                     <span
                         style={{
                             fontFamily: "Cookie, serif",
@@ -34,7 +34,7 @@ function HeaderWarehouseManager() {
                     >
                         MyPost
                     </span>
-                </a>
+                </Link>
                 <div style={{ display: "flex", flexDirection: "row", marginLeft: "auto" }}>
                     <Avatar src="/assets/img/Boss.jpg" alt="avatar" style={{}} />
                     <Button onClick={handleSignOut}>

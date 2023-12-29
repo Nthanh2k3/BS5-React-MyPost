@@ -8,6 +8,7 @@ import * as wareHouseStaffService from "../../apiService/wareHouseStaffService"
 import Cookies from "js-cookie";
 import { Button } from "@material-tailwind/react";
 import HeaderBoss from "../../Components/HeaderBoss";
+import HeaderWarehouseStaff from "../../Components/HeaderWarehouseStaff";
 
 
 function HomeWarehouseStaff() {
@@ -38,8 +39,7 @@ function HomeWarehouseStaff() {
 
     return (
         <div className="">
-            <HeaderBoss/>
-            {/* <Button onClick={testFunction}>Click</Button> */}
+            <HeaderWarehouseStaff/>
             <div className="flex h-full">
                 <div className="w-60">
                     <SidebarForWS warehouseId={warehouseId}/>

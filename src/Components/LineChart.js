@@ -64,6 +64,9 @@ export default function LineChart({ series }) {
                         fontFamily: "inherit",
                         fontWeight: 400,
                     },
+                    formatter: function (value) {
+                        return value;
+                    },
                 },
             },
             grid: {

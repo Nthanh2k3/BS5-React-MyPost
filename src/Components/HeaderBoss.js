@@ -24,7 +24,7 @@ function HeaderBoss() {
                     paddingBottom: 10,
                 }}
             >
-                <Link className="navbar-brand p-50" to="/home">
+                <Link className="navbar-brand p-50" to="/boss">
                     <span
                         style={{
                             fontFamily: "Cookie, serif",

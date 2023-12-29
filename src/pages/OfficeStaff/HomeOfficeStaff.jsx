@@ -32,13 +32,9 @@ function HomeOfficeStaff() {
 
     fetchData();
 
-    const testFunction = async () => {
-        await officeStaffService.updateShipFailled("100011")
-    }
-
     return (
         <div className="">
-            <HeaderBoss/>
+            <HeaderOfficeStaff/>
             {/* <Button onClick={testFunction}>Click</Button> */}
             <div className="flex h-full">
                 <div className="w-60">

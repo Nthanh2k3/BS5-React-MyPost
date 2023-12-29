@@ -7,16 +7,13 @@ import Tracking from "./Components/Tracking.js";
 import Header from "./Components/Header.js";
 
 import Root from "./pages/root.jsx";
-import ProtectedRoute from "./Routes/ProtectedRoute.js";
 import WarehouseStaffRoute from "./Routes/WarehouseStaffRoute.js";
 import OfficeManagerRoute from "./Routes/OfficeManagerRoute.js";
 import OfficeStaffRoute from "./Routes/OfficeStaffRoute.js";
 import WarehouseManagerRoute from "./Routes/WarehouseManagerRoute.js";
 import BossRoute from "./Routes/BossRoute.js";
 import AccCreateByBoss from "./Components/AccCreateByBoss.js";
-import Hello from "./Components/test.js";
 import HomeBoss from "./pages/Boss/HomeBoss.jsx";
-import ListTransferManager from "./Components/ListTransferManager.js";
 import ListOffice from "./pages/Boss/ListOffice.js";
 import ListWarehouse from "./pages/Boss/ListWarehouse.js";
 import ListOfficeManager from "./pages/Boss/ListOfficeManager.js";
@@ -41,6 +38,7 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/" element={<Home />} />
                 <Route path="/*" element={<Root />}>
                     {/** public routes */}
                     <Route path="home" element={<Home />} />
@@ -91,7 +89,7 @@ function App() {
                     {/** Office Staff */}
                     <Route element={<OfficeStaffRoute />}>
                         <Route path="officeStaff" element={<HomeOfficeStaff />}>
-                            <Route path="createOrder" element={<CreateNewOrder />}></Route>
+                            <Route path="createOrder/:id" element={<CreateNewOrder />}></Route>
                             <Route path=":id" element={<OrderStatus />} />
                         </Route>
                     </Route>
