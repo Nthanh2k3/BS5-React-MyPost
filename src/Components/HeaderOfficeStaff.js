@@ -21,9 +21,9 @@ function HeaderOfficeStaff() {
                             </span>
                 </a>
                 <div style={{display:"flex", flexDirection:"row", marginLeft:"auto"} }>
-                        <Avatar src="/assets/img/Boss.jpg" alt="avatar" style={{}}/>
+                        <Avatar src="./assets/img/Boss.JPG" alt="avatar" style={{}}/>
                         <Button>
-                            <img src="/assets/img/white-logout.svg" alt="logout" style={{width: 22,height:22}}/>
+                            <img src="./assets/img/white-logout.SVG" alt="logout" style={{width: 22,height:22}}/>
                         </Button>
                 </div>
                 
