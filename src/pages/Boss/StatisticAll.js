@@ -109,7 +109,7 @@ export default function StatisticAll() {
 
             const statistic = await statisticService.getStaticOrederInCountry();
             setInputOrder(statistic.order);
-            setSuccessOrder(statistic.sucess);
+            setSuccessOrder(statistic.success);
 
             const mapOrders = orders.map((order) => {
                 return {

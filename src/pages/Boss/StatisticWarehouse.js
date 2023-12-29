@@ -219,7 +219,7 @@ export default function StatisticWarehouse() {
                                         color="blue-gray"
                                         className="mb-2 uppercase"
                                     >
-                                        Total Orders sended to Warehouse
+                                        Total Orders sended to Destination Warehouse
                                     </Typography>
                                     <Typography variant="h2" color="blue-gray" className="mb-2">
                                         {totalSendedToRecWH}
@@ -238,7 +238,7 @@ export default function StatisticWarehouse() {
                                         color="blue-gray"
                                         className="mb-2 uppercase"
                                     >
-                                        Total Orders sended to Office
+                                        Total Orders sended to Destination Office
                                     </Typography>
                                     <Typography variant="h2" color="blue-gray" className="mb-2">
                                         {totalSendedToRecPO}

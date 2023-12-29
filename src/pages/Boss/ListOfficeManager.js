@@ -217,7 +217,7 @@ function DialogWithForm({ provinces }) {
         console.log("Submit payload:", payload);
         createNewOfficeManager(payload);
         handleOpen();
-        // window.location.reload(true);
+        window.location.reload(true);
     };
 
     const createNewOfficeManager = async (payload) => {
@@ -258,6 +258,7 @@ function DialogWithForm({ provinces }) {
                             color="indigo"
                             size="lg"
                             onChange={(e) => setProvince(e)}
+                            className="h-[44px]"
                         >
                             {provinces.map((province, index) => (
                                 <Option key={index} value={province}>
