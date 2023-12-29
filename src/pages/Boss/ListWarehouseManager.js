@@ -266,6 +266,7 @@ function DialogWithForm({ provinces }) {
                             label="Select Warehouse"
                             color="indigo"
                             size="lg"
+                            className="h-[44px]"
                             onChange={(e) => setProvince(e)}
                         >
                             {provinces.map((province, index) => (

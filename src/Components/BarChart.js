@@ -74,6 +74,9 @@ export default function BarChart({ data, state }) {
                         fontFamily: "inherit",
                         fontWeight: 400,
                     },
+                    formatter: function (value) {
+                        return value;
+                    },
                 },
             },
             grid: {

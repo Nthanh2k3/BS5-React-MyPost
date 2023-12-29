@@ -74,7 +74,7 @@ export default function StatisticWarehouse() {
             sortable: true,
         },
         {
-            name: "Confirm",
+            name: "Send",
             button: true,
             width: "15%",
             cell: (row) => (
