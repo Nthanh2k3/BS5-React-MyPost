@@ -50,7 +50,7 @@ export default function TrackingWithID() {
             <Header />
             <div class="flex justify-center mt-10 w-full font-quick">
                 <div class="flex flex-col items-center w-full">
-                    <div class="flex flex-row max-w-5xl justify-between w-full">
+                    <div class="flex flex-row max-w-5xl justify-center sm:justify-between w-full ">
                         <div class="flex flex-col w-1/3">
                             <div class="">
                                 <label>
@@ -90,7 +90,7 @@ export default function TrackingWithID() {
                                 </button>
                             </div>
                         </div>
-                        <div class="w-1/3">
+                        <div class="hidden sm:w-1/3 sm:block">
                             <img
                                 src="https://viettelpost.vn/viettelpost-iframe/assets/images/tracking-img.svg"
                                 alt="Tracking"

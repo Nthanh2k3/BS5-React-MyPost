@@ -39,7 +39,7 @@ function Header() {
                             </span>
                         </a>
                     </div>
-                    <div>
+                    <div className="hidden sm:block">
                         <ul className="navbar-nav nav-right">
                             <li className="nav-item">
                                 <Link
