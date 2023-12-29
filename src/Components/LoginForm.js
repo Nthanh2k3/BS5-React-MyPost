@@ -30,14 +30,14 @@ function LoginForm() {
 
             switch (decoded.role) {
                 case "boss":
-                    navigate("/boss");
+                    navigate("/boss/statistic/all");
                     break;
                 case "warehouseStaff":
                     navigate("/warehouseStaff");
                     break;
 
                 case "warehouseManager":
-                    navigate("/warehouseManager");
+                    navigate("/warehouseManager/warehouseStaff");
                     break;
 
                 case "officeStaff":
@@ -45,7 +45,7 @@ function LoginForm() {
                     break;
 
                 case "officeManager":
-                    navigate("/officeManager");
+                    navigate("/officeManager/officeStaff");
                     break;
             }
         } catch (error) {

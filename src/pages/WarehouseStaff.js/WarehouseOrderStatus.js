@@ -56,7 +56,7 @@ export default function StatisticWarehouse() {
             name: "OrderID",
             selector: (row) => row.id,
             sortable: true,
-            width: "20%",
+            width: "15%",
         },
         {
             name: "Sender",
@@ -74,6 +74,22 @@ export default function StatisticWarehouse() {
             sortable: true,
         },
         {
+            name: "View",
+            button: true,
+            cell: (row) => (
+                <div>
+                    <IconButton
+                        variant="text"
+                        size="lg"
+                        color="teal"
+                        onClick={(e) => handleViewOrder(row.id)}
+                    >
+                        <i className="fa-solid fa-eye fa-xl"></i>
+                    </IconButton>
+                </div>
+            ),
+        },
+        {
             name: "Send",
             button: true,
             width: "15%",
@@ -89,6 +105,11 @@ export default function StatisticWarehouse() {
             ),
         },
     ];
+
+    const handleViewOrder = (orderId) => {
+        const encodeId = btoa(orderId);
+        window.open(`/bill/${encodeId}`);
+    };
 
     const customStyles = {
         header: {

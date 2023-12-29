@@ -14,7 +14,7 @@ function Login() {
             const roleResponse = Cookies.get("role")
             switch (roleResponse) {
                 case "boss":
-                    navigate("/boss");
+                    navigate("/boss/statistic/all");
                     break;
                 case "warehouseStaff":
                     navigate("/warehouseStaff");

@@ -71,7 +71,7 @@ export default function OrderStatus() {
             name: "OrderID",
             selector: (row) => row.id,
             sortable: true,
-            width: "25%",
+            width: "15%",
         },
         {
             name: "Sender",
@@ -87,6 +87,22 @@ export default function OrderStatus() {
             name: "Status",
             selector: (row) => row.status,
             sortable: true,
+        },
+        {
+            name: "View",
+            button: true,
+            cell: (row) => (
+                <div>
+                    <IconButton
+                        variant="text"
+                        size="lg"
+                        color="teal"
+                        onClick={(e) => handleViewOrder(row.id)}
+                    >
+                        <i className="fa-solid fa-eye fa-xl"></i>
+                    </IconButton>
+                </div>
+            ),
         },
         {
             name: "Confirm",
@@ -110,7 +126,7 @@ export default function OrderStatus() {
             name: "OrderID",
             selector: (row) => row.id,
             sortable: true,
-            width: "25%",
+            width: "15%",
         },
         {
             name: "Sender",
@@ -126,6 +142,22 @@ export default function OrderStatus() {
             name: "Status",
             selector: (row) => row.status,
             sortable: true,
+        },
+        {
+            name: "View",
+            button: true,
+            cell: (row) => (
+                <div>
+                    <IconButton
+                        variant="text"
+                        size="lg"
+                        color="teal"
+                        onClick={(e) => handleViewOrder(row.id)}
+                    >
+                        <i className="fa-solid fa-eye fa-xl"></i>
+                    </IconButton>
+                </div>
+            ),
         },
         {
             name: "Confirm",
@@ -153,6 +185,11 @@ export default function OrderStatus() {
             ),
         },
     ];
+
+    const handleViewOrder = (orderId) => {
+        const encodeId = btoa(orderId);
+        window.open(`/bill/${encodeId}`);
+    };
 
     const customStyles = {
         header: {
