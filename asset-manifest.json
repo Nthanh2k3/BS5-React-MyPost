@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/BS5-React-MyPost/static/css/main.be494ed1.css",
+    "main.js": "/BS5-React-MyPost/static/js/main.a4f66c92.js",
+    "static/js/703.3eb6dee9.chunk.js": "/BS5-React-MyPost/static/js/703.3eb6dee9.chunk.js",
+    "static/js/198.046214e1.chunk.js": "/BS5-React-MyPost/static/js/198.046214e1.chunk.js",
+    "index.html": "/BS5-React-MyPost/index.html",
+    "main.be494ed1.css.map": "/BS5-React-MyPost/static/css/main.be494ed1.css.map",
+    "main.a4f66c92.js.map": "/BS5-React-MyPost/static/js/main.a4f66c92.js.map",
+    "703.3eb6dee9.chunk.js.map": "/BS5-React-MyPost/static/js/703.3eb6dee9.chunk.js.map",
+    "198.046214e1.chunk.js.map": "/BS5-React-MyPost/static/js/198.046214e1.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.be494ed1.css",
+    "static/js/main.a4f66c92.js"
+  ]
+}
